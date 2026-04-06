@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Domain">
+      <UniqueIdentifier>{2902b0c7-3c49-4cb3-9719-a6c03a8046bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\Exceptions">
+      <UniqueIdentifier>{70bb822a-c12b-4ddd-a1a5-54133746405e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\Exceptions\Account">
+      <UniqueIdentifier>{c3e51b93-29a3-4099-a67f-da96b8cd4b6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\enums">
+      <UniqueIdentifier>{9ab89033-d132-4ae4-9f5e-bd16749e9a80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\services">
+      <UniqueIdentifier>{483c7ef0-9ab6-4d32-b6f1-502473e247a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\repositories">
+      <UniqueIdentifier>{7933b002-fd7f-4e39-9475-58049d96fba1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\Models">
+      <UniqueIdentifier>{14e1315b-eb31-4078-aca2-ef087f71cb8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\Models\Effects">
+      <UniqueIdentifier>{5b1eed68-506e-4a78-84bf-e6d13f0ed3fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\Models\Accounts">
+      <UniqueIdentifier>{82ea5f33-2df1-4a58-aa19-1dee7b13754d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\Mapping">
+      <UniqueIdentifier>{976188ff-e235-423c-b06f-dd5b18db26c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Domain\ValueObjects">
+      <UniqueIdentifier>{83e6eec6-b08d-4ea7-942d-71e9d05b90df}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MiniBankingCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Exceptions\Account\InvalidDepositException.cpp">
+      <Filter>Source Files\Domain\Exceptions\Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Exceptions\Account\InsufficientBalanceException.cpp">
+      <Filter>Source Files\Domain\Exceptions\Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Exceptions\Account\InvalidWithdrawException.cpp">
+      <Filter>Source Files\Domain\Exceptions\Account</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\services\TransactionProcessor.cpp">
+      <Filter>Source Files\Domain\services</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\reposiories\AccountRepository.cpp">
+      <Filter>Source Files\Domain\repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\reposiories\TransactionRepository.cpp">
+      <Filter>Source Files\Domain\repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Models\Accounts\Account.cpp">
+      <Filter>Source Files\Domain\Models\Accounts</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Models\Accounts\CheckingAccount.cpp">
+      <Filter>Source Files\Domain\Models\Accounts</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Models\Accounts\DepositAccount.cpp">
+      <Filter>Source Files\Domain\Models\Accounts</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Models\Accounts\SavingsAccount.cpp">
+      <Filter>Source Files\Domain\Models\Accounts</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Models\TransactionEntry.cpp">
+      <Filter>Source Files\Domain\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Models\Transaction.cpp">
+      <Filter>Source Files\Domain\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Mapper\EntryMapper.cpp">
+      <Filter>Source Files\Domain\Mapping</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\ValueObjects\Money.cpp">
+      <Filter>Source Files\Domain\ValueObjects</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Domain\Exceptions\Account\InvalidDepositException.h">
+      <Filter>Source Files\Domain\Exceptions\Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Exceptions\Account\InsufficientbalanceException.h">
+      <Filter>Source Files\Domain\Exceptions\Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Exceptions\Account\InvalidWithdrawException.h">
+      <Filter>Source Files\Domain\Exceptions\Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\AccountStatus.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\AccountType.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\TransactionEntryType.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\TransactionStatus.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\TransactionType.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\services\TransactionProcessor.h">
+      <Filter>Source Files\Domain\services</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\LedgerAccountType.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\reposiories\AccountRepository.h">
+      <Filter>Source Files\Domain\repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\reposiories\TransactionRepository.h">
+      <Filter>Source Files\Domain\repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\WithdrawCapability.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\WithdrawResult.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\DepositResult.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\Transaction.h">
+      <Filter>Source Files\Domain\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\Accounts\Account.h">
+      <Filter>Source Files\Domain\Models\Accounts</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\Accounts\CheckingAccount.h">
+      <Filter>Source Files\Domain\Models\Accounts</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\Accounts\DepositAccount.h">
+      <Filter>Source Files\Domain\Models\Accounts</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\Accounts\SavingsAccount.h">
+      <Filter>Source Files\Domain\Models\Accounts</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\TransactionEntry.h">
+      <Filter>Source Files\Domain\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\Effects\Effect.h">
+      <Filter>Source Files\Domain\Models\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="TargetType.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectReason.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Mapper\EntryMapper.h">
+      <Filter>Source Files\Domain\Mapping</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\Effects\EffectTarget.h">
+      <Filter>Source Files\Domain\Models\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\ValueObjects\Money.h">
+      <Filter>Source Files\Domain\ValueObjects</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
