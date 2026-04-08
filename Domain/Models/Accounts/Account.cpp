@@ -109,5 +109,7 @@ void Account::Block() {
 }
 
 void Account::ApplyDelta(const Money& delta) {
+	
+
 	balance +=  delta;
 }	

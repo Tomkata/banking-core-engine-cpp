@@ -133,6 +133,7 @@ std::vector<Effect> TransactionProcessor::ExecuteTransaction(Transaction& tr, Fu
 		tr.MarkFailed(ex.what());
 		eptr = std::current_exception();
 	}
+	
 	ApplyEffects(effects);
 	transactionRepo.Add(std::move(tr));
 
@@ -177,14 +178,47 @@ void TransactionProcessor::ApplyEffects(const std::vector<Effect>& effects) {
 		}
 	}
 
-
+	std::vector<std::pair<Account*,Money>> rollbackLog;
 	//commit
-	for(const auto& [accountId,delta] : deltas){
+	try
+	{
+		for (const auto& [accountId, delta] : deltas) {
+			if (delta == Money(0))
+				continue;
+
+			Account* acc = accountRepo.FindById(accountId);
+
+			if (!acc)
+				throw std::logic_error("Account not found during commit");
+
+			rollbackLog.push_back({ acc,-delta });
+			acc->ApplyDelta(delta);
+		}
+	}
+	catch (const std::exception&)
+	{
+		RollbackChanges(rollbackLog);
+		throw;
+	}
+	
+}
+
+
+void TransactionProcessor::RollbackChanges(const std::vector<std::pair<Account*, Money>>& rollbackLog) {
+	for (auto it = rollbackLog.rbegin(); it != rollbackLog.rend(); ++it) {
+		const auto& [acc_ptr, delta] = *it;
+		
 		if (delta == Money(0))
 			continue;
-
-		Account* acc = accountRepo.FindById(accountId);
-		acc->ApplyDelta(delta);
+		try
+		{
+			acc_ptr->ApplyDelta(delta);
+		}
+		catch (const std::exception&)
+		{
+			std::cerr << "Rollback failed for account " << acc_ptr->GetId() << "\n";
+		}
 	}
 }
+
 

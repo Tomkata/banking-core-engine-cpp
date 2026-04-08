@@ -31,4 +31,5 @@ private:
 	std::vector<Effect> ExecuteTransaction(Transaction& tr, Func action);
 	void StoreEntries( const std::vector<Effect>& effects, Transaction& tr);
 	void ApplyEffects(const std::vector<Effect>& effects);
+	void RollbackChanges(const std::vector<std::pair<Account*, Money>>& rollbackLog);
 };

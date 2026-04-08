@@ -38,11 +38,9 @@ int main()
     }   
 
     try {
-        processor.Deposit(2, Money(10000));
-        processor.Withdraw(2, Money(100));
-        processor.Withdraw(2, Money(10));
-        processor.Transfer(2,1, Money(10));
-
+        processor.Deposit(1, Money(10000));
+        processor.Withdraw(1, Money(100));
+        processor.Transfer(1,2,Money(100));
         std::cout << "Operations completed successfully\n";
     }
     catch (const std::exception& ex) {
