@@ -6,7 +6,6 @@ Account не връща “само успех”
 
 А връща какви промени са настъпили.
 
-Това е огромен скок.
 
 Преди мисленето беше:
 
@@ -459,9 +458,68 @@ transfer
 failed withdraw
 4. Refactor names and typos
 
-Имаш още:
 
-reposiories
-matuiry
-penatly
-Такива неща не са фатални, но правят проекта да изглежда недовършен.
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+Стъпка 1
+
+Добави нов слой / папка примерно:
+
+Infrastructure/
+  Persistence/
+    Sqlite/
+
+или по-просто:
+
+Infrastructure/
+  Repositories/
+Стъпка 2
+
+Направи schema design, преди да пишеш код
+
+Трябва да решиш таблиците.
+
+За твоя проект най-логично:
+
+accounts
+id
+type
+status
+balance_cents
+transactions
+id
+type
+amount_cents
+from_account_id
+to_account_id
+status
+failure_reason
+transaction_entries
+id
+transaction_id
+entry_type
+ledger_type
+amount_cents
+description
+Стъпка 3
+
+Първо read/write за accounts
+
+Не скачай веднага във всичко.
+
+Направи:
+
+save account
+find account by id
+list accounts
+Стъпка 4
+
+После transactions + entries
+
+Стъпка 5
+
+После обвържи TransactionProcessor с DB transaction boundary
+
+Това вече е голямото.

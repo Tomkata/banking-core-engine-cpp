@@ -1,15 +1,17 @@
 #pragma once
 #include "../Models/Transaction.h"
 
+#include "../reposiories/ITransactionRepository.h"
+
 #include <vector>
 #include <iostream>
-class TransactionRepository {
+class TransactionRepository : public ITransactionRepository {
 private:
 	std::vector<Transaction> transactions;
 
 public:
-	void Add(Transaction&& transaction);
-	void PrintAll() const;
+	void Add(Transaction&& transaction) override;
+	void PrintAll() const override;
 
 private:
 	std::string TransactionTypeToString(TransactionType type) const;

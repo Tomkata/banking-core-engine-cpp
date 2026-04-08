@@ -38,6 +38,9 @@
     <Filter Include="Source Files\Domain\ValueObjects">
       <UniqueIdentifier>{83e6eec6-b08d-4ea7-942d-71e9d05b90df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Domain\Models\services">
+      <UniqueIdentifier>{6c7957f5-a80b-4dd7-9f70-8d7a7ebebff9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniBankingCore.cpp">
@@ -84,6 +87,9 @@
     </ClCompile>
     <ClCompile Include="Domain\ValueObjects\Money.cpp">
       <Filter>Source Files\Domain\ValueObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Domain\Models\services\TransferOperation.cpp">
+      <Filter>Source Files\Domain\Models\services</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +173,15 @@
     </ClInclude>
     <ClInclude Include="Domain\ValueObjects\Money.h">
       <Filter>Source Files\Domain\ValueObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\services\TransferOperation.h">
+      <Filter>Source Files\Domain\Models\services</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\reposiories\IAccountRepository.h">
+      <Filter>Source Files\Domain\repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\reposiories\ITransactionRepository.h">
+      <Filter>Source Files\Domain\repositories</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

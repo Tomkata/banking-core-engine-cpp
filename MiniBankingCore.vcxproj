@@ -135,6 +135,7 @@
     <ClCompile Include="Domain\Models\Accounts\CheckingAccount.cpp" />
     <ClCompile Include="Domain\Models\Accounts\DepositAccount.cpp" />
     <ClCompile Include="Domain\Models\Accounts\SavingsAccount.cpp" />
+    <ClCompile Include="Domain\Models\services\TransferOperation.cpp" />
     <ClCompile Include="Domain\Models\Transaction.cpp" />
     <ClCompile Include="Domain\Models\TransactionEntry.cpp" />
     <ClCompile Include="Domain\reposiories\AccountRepository.cpp" />
@@ -163,9 +164,12 @@
     <ClInclude Include="Domain\Models\Accounts\SavingsAccount.h" />
     <ClInclude Include="Domain\Models\Effects\Effect.h" />
     <ClInclude Include="Domain\Models\Effects\EffectTarget.h" />
+    <ClInclude Include="Domain\Models\services\TransferOperation.h" />
     <ClInclude Include="Domain\Models\Transaction.h" />
     <ClInclude Include="Domain\Models\TransactionEntry.h" />
     <ClInclude Include="Domain\reposiories\AccountRepository.h" />
+    <ClInclude Include="Domain\reposiories\IAccountRepository.h" />
+    <ClInclude Include="Domain\reposiories\ITransactionRepository.h" />
     <ClInclude Include="Domain\reposiories\TransactionRepository.h" />
     <ClInclude Include="Domain\services\TransactionProcessor.h" />
     <ClInclude Include="Domain\ValueObjects\Money.h" />

@@ -3,7 +3,7 @@
 #include "../../Exceptions/Account/InvalidWithdrawException.h"
 #include "../../Exceptions/Account/InvalidDepositException.h"
 
-std::vector<Effect> TransferOperation::CreateEffects(
+ std::vector<Effect> TransferOperation::CreateEffects(
 	Account& accountA,
 	Account& accountB,
 	Money amount) {

@@ -27,4 +27,4 @@ public:
 	LedgerAccountType GetLedgerType() const;
 	const Money& GetAmount() const;
 	std::string GetDescription() const;
-};
+};	

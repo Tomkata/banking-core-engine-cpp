@@ -2,6 +2,8 @@
 #include "../reposiories/AccountRepository.h"
 #include "../reposiories/TransactionRepository.h"
 
+#include "../Models/services/TransferOperation.h"
+
 #include "../enums/WithdrawResult.h"
 
 #include "../Exceptions/Account/InvalidWithdrawException.h"
@@ -58,32 +60,13 @@ void TransactionProcessor::Transfer(int fromAccountId, int toAccountId, Money am
 			throw std::logic_error("Account not found: id=" + std::to_string(toAccountId));
 		}
 
-		if (fromAccountId == toAccountId) {
-			throw std::logic_error("Cannot transfer to the same account");
-		}
+		TransferOperation op;
+		
+		auto effects = op.CreateEffects(*fromAccount,*toAccount,amount);
 
-		auto withdrawResult = fromAccount->CanWithdraw(amount);
-		if (withdrawResult != WithdrawResult::Ok) {
-			throw InvalidWithdrawException(withdrawResult);
-		}
-
-		DepositResult depositResult = toAccount->CanDeposit(amount);
-		if (depositResult != DepositResult::Ok) {
-			throw InvalidDepositException(depositResult);
-		}
-
-		std::vector<Effect> withdrawEffects = fromAccount->Withdraw(amount);
-		std::vector<Effect> depositEffects = toAccount->Deposit(amount);
-
-		std::vector<Effect> allEffects;
-		allEffects.reserve(withdrawEffects.size() + depositEffects.size());
-
-		allEffects.insert(allEffects.end(),withdrawEffects.begin(),withdrawEffects.end());
-		allEffects.insert(allEffects.end(), depositEffects.begin(), depositEffects.end());
-
-		StoreEntries(allEffects, tr);
-		return allEffects;
-
+		StoreEntries(effects, tr);
+		return effects;
+			
 		});
 }
 

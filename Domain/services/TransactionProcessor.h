@@ -2,20 +2,20 @@
 
 
 #include "../Models/Transaction.h"
-#include "../reposiories/TransactionRepository.h"
-#include "../reposiories/AccountRepository.h"
+#include "../reposiories/ITransactionRepository.h"
+#include "../reposiories/IAccountRepository.h"
 #include "../Mapper/EntryMapper.h"
 
 
 class TransactionProcessor {
 private:
-	AccountRepository& accountRepo;
-	TransactionRepository& transactionRepo;
+	IAccountRepository& accountRepo;
+	ITransactionRepository& transactionRepo;
 	EntryMapper& mapper;
 
 public:
-	TransactionProcessor(AccountRepository& accountRepo, 
-						TransactionRepository& transactionRepo,
+	TransactionProcessor(IAccountRepository& accountRepo,
+						ITransactionRepository& transactionRepo,
 						 EntryMapper& mapper)
 		:
 		accountRepo(accountRepo),	
