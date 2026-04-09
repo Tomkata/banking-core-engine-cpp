@@ -41,6 +41,15 @@
     <Filter Include="Source Files\Domain\Models\services">
       <UniqueIdentifier>{6c7957f5-a80b-4dd7-9f70-8d7a7ebebff9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Infrastructure">
+      <UniqueIdentifier>{fdc82cec-29a8-4470-a6d9-acbf68244057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Infrastructure\Repositories">
+      <UniqueIdentifier>{b1d7c84a-c916-4434-bc6c-74a8506db6ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Infrastructure\Database">
+      <UniqueIdentifier>{db7d3d04-a2d2-41c1-8ae5-a4371a950526}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniBankingCore.cpp">
@@ -90,6 +99,12 @@
     </ClCompile>
     <ClCompile Include="Domain\Models\services\TransferOperation.cpp">
       <Filter>Source Files\Domain\Models\services</Filter>
+    </ClCompile>
+    <ClCompile Include="Infrastructure\Database\sqlite3.c">
+      <Filter>Source Files\Infrastructure\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Infrastructure\Database\Database.cpp">
+      <Filter>Source Files\Infrastructure\Database</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +197,12 @@
     </ClInclude>
     <ClInclude Include="Domain\reposiories\ITransactionRepository.h">
       <Filter>Source Files\Domain\repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Infrastructure\Database\sqlite3.h">
+      <Filter>Source Files\Infrastructure\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Infrastructure\Database\Database.h">
+      <Filter>Source Files\Infrastructure\Database</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

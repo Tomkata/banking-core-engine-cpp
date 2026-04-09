@@ -4,6 +4,7 @@
 #include "../MiniBankingCore/Domain/Models/Accounts/DepositAccount.h"
 #include "../MiniBankingCore/Domain/Models/Accounts/SavingsAccount.h"
 
+#include "../MiniBankingCore/Infrastructure/Database/Database.h"
 
 
 #include "../MiniBankingCore/Domain/Models/Transaction.h"
@@ -19,7 +20,43 @@
 
 int main()
 {
-    AccountRepository accountRepo;
+    
+    Database db("bank.db");
+
+    db.Execute(R"(
+    CREATE TABLE IF NOT EXISTS accounts(
+id INTEGER PRIMARY KEY,
+type INTEGER NOT NULL,
+status INTEGER NOT NULL,
+balance_cents INTEGER NOT NULL
+);
+)");
+
+    db.Execute(R"(
+    CREATE TABLE IF NOT EXISTS transactions(
+id INTEGER PRIMARY KEY,
+type INTEGER NOT NULL,
+status INTEGER NOT NULL,
+amount_cents INTEGER NOT NULL,
+from_account_id INTEGER,
+to_account_id INTEGER,
+failure_reason TEXT
+);
+)");
+
+    db.Execute(R"(
+CREATE TABLE IF NOT EXISTS transaction_entries (
+    id INTEGER PRIMARY KEY,
+    transaction_id INTEGER NOT NULL,
+    entry_type INTEGER NOT NULL,
+    ledger_type INTEGER NOT NULL,
+    amount_cents INTEGER NOT NULL,
+    description TEXT,
+    FOREIGN KEY(transaction_id) REFERENCES transactions(id)
+);
+)");
+
+    /*AccountRepository accountRepo;
     TransactionRepository transactionRepo;
     EntryMapper entryMapper;
 
@@ -52,7 +89,7 @@ int main()
     std::cout << "" << '\n';
 
     std::cout << "\n--- Transactions ---\n";
-    transactionRepo.PrintAll();
+    transactionRepo.PrintAll();*/
     return 0;
 }
 

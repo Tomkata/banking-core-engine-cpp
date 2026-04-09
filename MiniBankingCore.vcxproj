@@ -142,6 +142,8 @@
     <ClCompile Include="Domain\reposiories\TransactionRepository.cpp" />
     <ClCompile Include="Domain\services\TransactionProcessor.cpp" />
     <ClCompile Include="Domain\ValueObjects\Money.cpp" />
+    <ClCompile Include="Infrastructure\Database\Database.cpp" />
+    <ClCompile Include="Infrastructure\Database\sqlite3.c" />
     <ClCompile Include="MiniBankingCore.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +176,8 @@
     <ClInclude Include="Domain\services\TransactionProcessor.h" />
     <ClInclude Include="Domain\ValueObjects\Money.h" />
     <ClInclude Include="EffectReason.h" />
+    <ClInclude Include="Infrastructure\Database\Database.h" />
+    <ClInclude Include="Infrastructure\Database\sqlite3.h" />
     <ClInclude Include="TargetType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
