@@ -9,8 +9,7 @@
 
 #include "../MiniBankingCore/Domain/Models/Transaction.h"
 
-#include "Domain/reposiories/AccountRepository.h"
-#include "Domain/reposiories/TransactionRepository.h"
+#include "../MiniBankingCore/Infrastructure/Repositories/SqliteAccountRepository.h"
 
 #include "Domain/services/TransactionProcessor.h"
 #include "Domain/Mapper/EntryMapper.h"
@@ -34,18 +33,18 @@ balance_cents INTEGER NOT NULL
 
     db.Execute(R"(
     CREATE TABLE IF NOT EXISTS transactions(
-id INTEGER PRIMARY KEY,
-type INTEGER NOT NULL,
-status INTEGER NOT NULL,
-amount_cents INTEGER NOT NULL,
-from_account_id INTEGER,
-to_account_id INTEGER,
-failure_reason TEXT
+    id INTEGER PRIMARY KEY,
+    type INTEGER NOT NULL,
+    status INTEGER NOT NULL,
+    amount_cents INTEGER NOT NULL,
+    from_account_id INTEGER,
+    to_account_id INTEGER,
+    failure_reason TEXT
 );
 )");
 
     db.Execute(R"(
-CREATE TABLE IF NOT EXISTS transaction_entries (
+    CREATE TABLE IF NOT EXISTS transaction_entries (
     id INTEGER PRIMARY KEY,
     transaction_id INTEGER NOT NULL,
     entry_type INTEGER NOT NULL,
@@ -55,6 +54,31 @@ CREATE TABLE IF NOT EXISTS transaction_entries (
     FOREIGN KEY(transaction_id) REFERENCES transactions(id)
 );
 )");
+
+    db.Execute(R"(
+    CREATE TABLE IF NOT EXISTS deposit_accounts (
+    account_id INTEGER PRIMARY KEY,
+    months INTEGER NOT NULL,
+    interest_rate REAL NOT NULL,
+    FOREIGN KEY(account_id) REFERENCES accounts(id)
+);)");
+
+    
+
+    SqliteAccountRepository repo(db);
+   DepositAccount acc(6,0.02);
+   
+   try {
+       repo.Add(acc);
+   }
+   catch (const std::exception& ex) {
+       std::cout << ex.what() << std::endl;
+   }
+
+    auto loaded = repo.FindById(acc.GetId());
+
+    std::cout << loaded->GetId() << " " << loaded->GetBalance() << std::endl;
+
 
     /*AccountRepository accountRepo;
     TransactionRepository transactionRepo;

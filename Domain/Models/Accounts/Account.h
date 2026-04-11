@@ -16,7 +16,7 @@ class Account {
 
 private:
     static int nextId;
-    int id;
+    int id; 
     AccountType type;
     AccountStatus status;
     Money balance;
@@ -24,7 +24,7 @@ private:
 
 public:
     Account(AccountType type);
-
+    Account(AccountType type,int id, AccountStatus status, Money balance);
     virtual ~Account() = default;
 
    virtual std::vector<Effect> Deposit(const Money& amount);
@@ -35,6 +35,7 @@ public:
     int GetId() const;
     const Money& GetBalance() const;
     AccountStatus GetStatus() const;
+    AccountType GetType() const;
     void ApplyDelta(const Money& delta);
 
 

@@ -34,3 +34,7 @@ void Database::Commit() {
 void Database::Rollback() {
 	Execute("ROLLBACK;");
 }
+
+sqlite3* Database::GetConnection() {
+	return db;
+}

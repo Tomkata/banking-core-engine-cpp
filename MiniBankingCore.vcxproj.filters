@@ -20,9 +20,6 @@
     <Filter Include="Source Files\Domain\services">
       <UniqueIdentifier>{483c7ef0-9ab6-4d32-b6f1-502473e247a0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Domain\repositories">
-      <UniqueIdentifier>{7933b002-fd7f-4e39-9475-58049d96fba1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Domain\Models">
       <UniqueIdentifier>{14e1315b-eb31-4078-aca2-ef087f71cb8a}</UniqueIdentifier>
     </Filter>
@@ -50,6 +47,12 @@
     <Filter Include="Source Files\Infrastructure\Database">
       <UniqueIdentifier>{db7d3d04-a2d2-41c1-8ae5-a4371a950526}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Domain\Interfaces">
+      <UniqueIdentifier>{7933b002-fd7f-4e39-9475-58049d96fba1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Infrastructure\Factories">
+      <UniqueIdentifier>{948ba543-394c-482e-bfde-417d920cf8c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniBankingCore.cpp">
@@ -67,11 +70,8 @@
     <ClCompile Include="Domain\services\TransactionProcessor.cpp">
       <Filter>Source Files\Domain\services</Filter>
     </ClCompile>
-    <ClCompile Include="Domain\reposiories\AccountRepository.cpp">
-      <Filter>Source Files\Domain\repositories</Filter>
-    </ClCompile>
     <ClCompile Include="Domain\reposiories\TransactionRepository.cpp">
-      <Filter>Source Files\Domain\repositories</Filter>
+      <Filter>Source Files\Domain\Interfaces</Filter>
     </ClCompile>
     <ClCompile Include="Domain\Models\Accounts\Account.cpp">
       <Filter>Source Files\Domain\Models\Accounts</Filter>
@@ -106,6 +106,12 @@
     <ClCompile Include="Infrastructure\Database\Database.cpp">
       <Filter>Source Files\Infrastructure\Database</Filter>
     </ClCompile>
+    <ClCompile Include="Infrastructure\Repositories\SqliteAccountRepository.cpp">
+      <Filter>Source Files\Infrastructure\Repositories</Filter>
+    </ClCompile>
+    <ClCompile Include="Infrastructure\Factories\AccountFactory.cpp">
+      <Filter>Source Files\Infrastructure\Factories</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Domain\Exceptions\Account\InvalidDepositException.h">
@@ -138,11 +144,8 @@
     <ClInclude Include="Domain\enums\LedgerAccountType.h">
       <Filter>Source Files\Domain\enums</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\reposiories\AccountRepository.h">
-      <Filter>Source Files\Domain\repositories</Filter>
-    </ClInclude>
     <ClInclude Include="Domain\reposiories\TransactionRepository.h">
-      <Filter>Source Files\Domain\repositories</Filter>
+      <Filter>Source Files\Domain\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Domain\enums\WithdrawCapability.h">
       <Filter>Source Files\Domain\enums</Filter>
@@ -193,15 +196,24 @@
       <Filter>Source Files\Domain\Models\services</Filter>
     </ClInclude>
     <ClInclude Include="Domain\reposiories\IAccountRepository.h">
-      <Filter>Source Files\Domain\repositories</Filter>
+      <Filter>Source Files\Domain\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Domain\reposiories\ITransactionRepository.h">
-      <Filter>Source Files\Domain\repositories</Filter>
+      <Filter>Source Files\Domain\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Infrastructure\Database\sqlite3.h">
       <Filter>Source Files\Infrastructure\Database</Filter>
     </ClInclude>
     <ClInclude Include="Infrastructure\Database\Database.h">
+      <Filter>Source Files\Infrastructure\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Infrastructure\Repositories\SqliteAccountRepository.h">
+      <Filter>Source Files\Infrastructure\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Infrastructure\Factories\AccountFactory.h">
+      <Filter>Source Files\Infrastructure\Factories</Filter>
+    </ClInclude>
+    <ClInclude Include="Infrastructure\Database\SqliteStatementGuard.h">
       <Filter>Source Files\Infrastructure\Database</Filter>
     </ClInclude>
   </ItemGroup>

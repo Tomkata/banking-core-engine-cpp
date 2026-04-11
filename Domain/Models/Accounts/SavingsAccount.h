@@ -10,6 +10,9 @@ public:
 	SavingsAccount()
 	:Account(AccountType::Saving){}
 
+	SavingsAccount(int id, AccountStatus status, Money balance)
+		:Account(AccountType::Saving,id,status,balance){ }
+
 	DepositResult CanDeposit(const Money& amount) const override {
 		return Account::BaseCanDeposit(amount);
 	}

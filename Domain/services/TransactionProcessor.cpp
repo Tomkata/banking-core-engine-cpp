@@ -1,5 +1,4 @@
 #include "TransactionProcessor.h"
-#include "../reposiories/AccountRepository.h"
 #include "../reposiories/TransactionRepository.h"
 
 #include "../Models/services/TransferOperation.h"
@@ -26,7 +25,7 @@ void TransactionProcessor::Deposit(int toAccountId, Money amount) {
 
 	auto effects  = ExecuteTransaction(tr, [&]() {
 
-		Account* toAccount = accountRepo.FindById(toAccountId);
+		auto toAccount = accountRepo.FindById(toAccountId);
 
 		if (toAccount == nullptr) {
 			throw std::logic_error("Account not found: id=" + std::to_string(toAccountId));
@@ -51,8 +50,8 @@ void TransactionProcessor::Transfer(int fromAccountId, int toAccountId, Money am
 	Transaction tr(TransactionType::Transfer, amount, fromAccountId, toAccountId);
 
 	auto effects = ExecuteTransaction(tr, [&]() {
-		Account* fromAccount = accountRepo.FindById(fromAccountId);
-		Account* toAccount = accountRepo.FindById(toAccountId);
+		auto fromAccount = accountRepo.FindById(fromAccountId);
+		auto toAccount = accountRepo.FindById(toAccountId);
 		if (fromAccount == nullptr) {
 			throw std::logic_error("Account not found: id=" + std::to_string(fromAccountId));
 		}
@@ -77,7 +76,7 @@ void TransactionProcessor::Withdraw(int fromAccountId, Money amount) {
 	
 	auto effects = ExecuteTransaction(tr, [&]() {
 
-		Account* fromAccount = accountRepo.FindById(fromAccountId);
+		auto fromAccount = accountRepo.FindById(fromAccountId);
 
 		if (fromAccount == nullptr) {
 			throw std::logic_error("Account not found: id=" + std::to_string(fromAccountId));
@@ -140,68 +139,50 @@ void TransactionProcessor::ApplyEffects(const std::vector<Effect>& effects) {
 
 	//prepare
 	std::unordered_map<int, Money> deltas;
+	std::unordered_map<int, std::unique_ptr<Account>> loadedAccounts;
 	
 	for (const auto& effect : effects) {
 		if (effect.target.type != TargetType::CustomerAccount) 
 			continue;
+		int accountId = effect.target.targetId;
+		if (loadedAccounts.find(accountId) == loadedAccounts.end()) {
+			loadedAccounts[accountId] = accountRepo.FindById(accountId);
+		}
 
-		deltas[effect.target.targetId] += effect.delta;
+		deltas[accountId] += effect.delta;
 	}
 
 	//validation
 	for (const auto& [accountId,delta] : deltas) {
-		Account* acc = accountRepo.FindById(accountId);
 
-		if (!acc) {
+		if (!loadedAccounts[accountId]) {
 			throw std::logic_error("Account not found: id=" + std::to_string(accountId));
 		}
 
-		if (acc->GetBalance() + delta < Money(0)) {
+		if (loadedAccounts[accountId]->GetBalance() + delta < Money(0)) {
 			throw std::logic_error("Invalid balance after apply: id=" + std::to_string(accountId));
 		}
 	}
 
-	std::vector<std::pair<Account*,Money>> rollbackLog;
 	//commit
-	try
-	{
+
 		for (const auto& [accountId, delta] : deltas) {
 			if (delta == Money(0))
 				continue;
 
-			Account* acc = accountRepo.FindById(accountId);
+			auto& acc = loadedAccounts[accountId];
 
 			if (!acc)
 				throw std::logic_error("Account not found during commit");
 
-			rollbackLog.push_back({ acc,-delta });
 			acc->ApplyDelta(delta);
 		}
-	}
-	catch (const std::exception&)
-	{
-		RollbackChanges(rollbackLog);
-		throw;
+
+	for (auto& [accountId, acc] : loadedAccounts) {
+
+		accountRepo.Update(*acc);
 	}
 	
-}
-
-
-void TransactionProcessor::RollbackChanges(const std::vector<std::pair<Account*, Money>>& rollbackLog) {
-	for (auto it = rollbackLog.rbegin(); it != rollbackLog.rend(); ++it) {
-		const auto& [acc_ptr, delta] = *it;
-		
-		if (delta == Money(0))
-			continue;
-		try
-		{
-			acc_ptr->ApplyDelta(delta);
-		}
-		catch (const std::exception&)
-		{
-			std::cerr << "Rollback failed for account " << acc_ptr->GetId() << "\n";
-		}
-	}
 }
 
 

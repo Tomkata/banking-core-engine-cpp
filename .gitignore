@@ -11,3 +11,6 @@ Release/
 # Temporary
 *.log
 *.tmp
+
+# Database files
+*.db

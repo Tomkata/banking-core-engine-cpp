@@ -138,12 +138,13 @@
     <ClCompile Include="Domain\Models\services\TransferOperation.cpp" />
     <ClCompile Include="Domain\Models\Transaction.cpp" />
     <ClCompile Include="Domain\Models\TransactionEntry.cpp" />
-    <ClCompile Include="Domain\reposiories\AccountRepository.cpp" />
     <ClCompile Include="Domain\reposiories\TransactionRepository.cpp" />
     <ClCompile Include="Domain\services\TransactionProcessor.cpp" />
     <ClCompile Include="Domain\ValueObjects\Money.cpp" />
     <ClCompile Include="Infrastructure\Database\Database.cpp" />
     <ClCompile Include="Infrastructure\Database\sqlite3.c" />
+    <ClCompile Include="Infrastructure\Factories\AccountFactory.cpp" />
+    <ClCompile Include="Infrastructure\Repositories\SqliteAccountRepository.cpp" />
     <ClCompile Include="MiniBankingCore.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +170,6 @@
     <ClInclude Include="Domain\Models\services\TransferOperation.h" />
     <ClInclude Include="Domain\Models\Transaction.h" />
     <ClInclude Include="Domain\Models\TransactionEntry.h" />
-    <ClInclude Include="Domain\reposiories\AccountRepository.h" />
     <ClInclude Include="Domain\reposiories\IAccountRepository.h" />
     <ClInclude Include="Domain\reposiories\ITransactionRepository.h" />
     <ClInclude Include="Domain\reposiories\TransactionRepository.h" />
@@ -178,6 +178,9 @@
     <ClInclude Include="EffectReason.h" />
     <ClInclude Include="Infrastructure\Database\Database.h" />
     <ClInclude Include="Infrastructure\Database\sqlite3.h" />
+    <ClInclude Include="Infrastructure\Database\SqliteStatementGuard.h" />
+    <ClInclude Include="Infrastructure\Factories\AccountFactory.h" />
+    <ClInclude Include="Infrastructure\Repositories\SqliteAccountRepository.h" />
     <ClInclude Include="TargetType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

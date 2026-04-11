@@ -18,6 +18,9 @@ Account::Account(AccountType type)
 	: id(nextId++), type(type), balance(0), status(AccountStatus::Active) {
 }
 
+Account::Account(AccountType type, int id, AccountStatus status, Money balance)
+	:type(type), id(id), status(status), balance(balance) {
+}
 
 
 std::vector<Effect> Account::Deposit(const Money& amount) {
@@ -113,3 +116,7 @@ void Account::ApplyDelta(const Money& delta) {
 
 	balance +=  delta;
 }	
+
+AccountType Account::GetType() const {
+	return type;
+}

@@ -4,9 +4,11 @@
 
 class CheckingAccount : public Account {
 public:
+    CheckingAccount(int id, AccountStatus status, Money balance)
+        : Account(AccountType::Checking, id, status, balance) {}
+
     CheckingAccount()
-        : Account(AccountType::Checking) {
-    }
+        : Account(AccountType::Checking) { }
 
     WithdrawResult  CanWithdraw(const Money& amount) const override ;
     DepositResult CanDeposit(const Money& amount) const override;
