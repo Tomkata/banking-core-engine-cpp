@@ -23,6 +23,8 @@ private:
 
 public:
 	Transaction(TransactionType type, Money amount, int fromAccountId, int toAccountId);
+	Transaction(int id, TransactionType type, Money amount, int fromAccountId, int toAccountId, TransactionStatus status, const std::string& failureReason);
+
 public:
 	void MarkSuccess();
 	void MarkFailed(const std::string& reason);

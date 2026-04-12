@@ -70,9 +70,6 @@
     <ClCompile Include="Domain\services\TransactionProcessor.cpp">
       <Filter>Source Files\Domain\services</Filter>
     </ClCompile>
-    <ClCompile Include="Domain\reposiories\TransactionRepository.cpp">
-      <Filter>Source Files\Domain\Interfaces</Filter>
-    </ClCompile>
     <ClCompile Include="Domain\Models\Accounts\Account.cpp">
       <Filter>Source Files\Domain\Models\Accounts</Filter>
     </ClCompile>
@@ -112,6 +109,9 @@
     <ClCompile Include="Infrastructure\Factories\AccountFactory.cpp">
       <Filter>Source Files\Infrastructure\Factories</Filter>
     </ClCompile>
+    <ClCompile Include="Infrastructure\Repositories\SqliteTransactionRepository.cpp">
+      <Filter>Source Files\Infrastructure\Repositories</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Domain\Exceptions\Account\InvalidDepositException.h">
@@ -143,9 +143,6 @@
     </ClInclude>
     <ClInclude Include="Domain\enums\LedgerAccountType.h">
       <Filter>Source Files\Domain\enums</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\reposiories\TransactionRepository.h">
-      <Filter>Source Files\Domain\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Domain\enums\WithdrawCapability.h">
       <Filter>Source Files\Domain\enums</Filter>
@@ -215,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="Infrastructure\Database\SqliteStatementGuard.h">
       <Filter>Source Files\Infrastructure\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Infrastructure\Repositories\SqliteTransactionRepository.h">
+      <Filter>Source Files\Infrastructure\Repositories</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

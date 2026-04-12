@@ -108,12 +108,16 @@ std::vector<Effect> TransactionProcessor::ExecuteTransaction(Transaction& tr, Fu
 	{
 		effects = action();
 		if (tr.GetStatus() == Pending)
+		{
 			tr.MarkSuccess();
+		}
 	}
 	catch (const std::exception& ex)
 	{
 		tr.MarkFailed(ex.what());
+		transactionRepo.Update(tr);
 		eptr = std::current_exception();
+
 	}
 	
 	ApplyEffects(effects);

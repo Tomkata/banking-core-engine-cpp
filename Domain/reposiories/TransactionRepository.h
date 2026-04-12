@@ -11,7 +11,6 @@ private:
 
 public:
 	void Add(Transaction&& transaction) override;
-	void PrintAll() const override;
 
 private:
 	std::string TransactionTypeToString(TransactionType type) const;

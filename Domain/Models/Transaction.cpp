@@ -13,6 +13,23 @@ Transaction::Transaction(TransactionType type, Money amount, int fromAccountId, 
 	status(TransactionStatus::Pending)
 {}
 
+Transaction::Transaction(int id,
+	TransactionType type, 
+	Money amount, 
+	int fromAccountId, 
+	int toAccountId, 
+	TransactionStatus status,
+	const std::string& failureReason)
+	: id(id),
+	type(type),
+	amount(amount),
+	fromAccountId(fromAccountId),
+	toAccountId(toAccountId),
+	status(TransactionStatus::Pending)
+{
+}
+
+
 void Transaction::MarkSuccess() {
 	EnsureNotFinalized();
 	if (!isBalanced()) {

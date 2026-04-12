@@ -19,7 +19,7 @@ public:
 						 EntryMapper& mapper)
 		:
 		accountRepo(accountRepo),	
-		transactionRepo(transactionRepo),
+		transactionRepo(transactionRepo),	
 		mapper(mapper){
 	}
 	void Transfer(int fromAccountId, int toAccountId, Money amount);

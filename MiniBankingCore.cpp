@@ -10,12 +10,14 @@
 #include "../MiniBankingCore/Domain/Models/Transaction.h"
 
 #include "../MiniBankingCore/Infrastructure/Repositories/SqliteAccountRepository.h"
+#include "../MiniBankingCore/Infrastructure/Repositories/SqliteTransactionRepository.h"
 
 #include "Domain/services/TransactionProcessor.h"
 #include "Domain/Mapper/EntryMapper.h"
 
 #include <iostream>
- 
+
+
 
 int main()
 {
@@ -64,20 +66,21 @@ balance_cents INTEGER NOT NULL
 );)");
 
     
-
     SqliteAccountRepository repo(db);
+    EntryMapper mapper;
+    SqliteTransactionRepository transactionRepo(db);
+
+    TransactionProcessor processor(repo, transactionRepo, mapper);
+
+
    DepositAccount acc(6,0.02);
+   DepositAccount acc2(6, 0.02);
    
-   try {
-       repo.Add(acc);
-   }
-   catch (const std::exception& ex) {
-       std::cout << ex.what() << std::endl;
-   }
 
-    auto loaded = repo.FindById(acc.GetId());
+   processor.Transfer(acc.GetId(), acc2.GetId(), Money(100));
+   processor.Deposit(acc.GetId(), Money(100));
 
-    std::cout << loaded->GetId() << " " << loaded->GetBalance() << std::endl;
+
 
 
     /*AccountRepository accountRepo;

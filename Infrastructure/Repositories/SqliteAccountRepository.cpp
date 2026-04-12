@@ -55,7 +55,7 @@ void SqliteAccountRepository::Add(const Account& account) {
 		}
 		
 	}
-	
+		
 };
 
 std::unique_ptr<Account> SqliteAccountRepository::FindById(int id) {
@@ -125,10 +125,22 @@ void  SqliteAccountRepository::Update(const Account& account) {
 	}
 }
 
-void SqliteAccountRepository::PrintAll() const {
 
-}
 
 bool SqliteAccountRepository::Exists(int id) const {
+	sqlite3_stmt* stmt;
+
+	std::string sql = R"(SELECT COUNT(*) FROM accounts WHERE id = ?;)";
+
+	if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
+	}
+	SqliteStatementGuard guard{ stmt };
+
+	 sqlite3_bind_int(stmt,1,id);
+
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		return sqlite3_column_int(stmt, 0) > 0;
+	}
 	return false;
 }

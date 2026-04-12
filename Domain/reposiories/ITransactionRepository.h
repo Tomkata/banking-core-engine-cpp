@@ -5,6 +5,8 @@
 class ITransactionRepository {
 public:
 	virtual ~ITransactionRepository() = default;
-	virtual void Add(Transaction&& transaction) = 0;
-	virtual void PrintAll() const = 0;
-};
+	virtual void Add( Transaction&& transaction) = 0;
+	virtual void Update(Transaction& transaction) = 0;
+	virtual std::unique_ptr<Transaction> FindById(int id) = 0;
+
+};		
