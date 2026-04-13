@@ -59,9 +59,10 @@ void TransactionProcessor::Transfer(int fromAccountId, int toAccountId, Money am
 			throw std::logic_error("Account not found: id=" + std::to_string(toAccountId));
 		}
 
-		TransferOperation op;
-		
-		auto effects = op.CreateEffects(*fromAccount,*toAccount,amount);
+	
+		auto fee = calc.CalculateFee(0.01,amount);
+
+		auto effects = transferOperation.CreateEffects(*fromAccount,*toAccount,amount,fee);
 
 		StoreEntries(effects, tr);
 		return effects;
@@ -101,7 +102,7 @@ void TransactionProcessor::Withdraw(int fromAccountId, Money amount) {
 
 
 template<typename Func>
-std::vector<Effect> TransactionProcessor::ExecuteTransaction(Transaction&	, Func action) {
+std::vector<Effect> TransactionProcessor::ExecuteTransaction(Transaction& tr, Func action) {
 	std::exception_ptr eptr = nullptr;
 	std::vector<Effect> effects;
 	uow.BeginTransaction();

@@ -10,4 +10,4 @@ public:
 	virtual void BeginTransaction() { db.BeginTransaction(); };
 	virtual void Commit() { db.Commit(); };
 	virtual void Rollback() { db.Rollback(); };
-};
+};	

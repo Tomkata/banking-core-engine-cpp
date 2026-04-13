@@ -135,6 +135,7 @@
     <ClCompile Include="Domain\Models\Accounts\CheckingAccount.cpp" />
     <ClCompile Include="Domain\Models\Accounts\DepositAccount.cpp" />
     <ClCompile Include="Domain\Models\Accounts\SavingsAccount.cpp" />
+    <ClCompile Include="Domain\Models\services\TransferFeeCalculator.cpp" />
     <ClCompile Include="Domain\Models\services\TransferOperation.cpp" />
     <ClCompile Include="Domain\Models\Transaction.cpp" />
     <ClCompile Include="Domain\Models\TransactionEntry.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="MiniBankingCore.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Domain\BankConstants.h" />
     <ClInclude Include="Domain\enums\AccountStatus.h" />
     <ClInclude Include="Domain\enums\AccountType.h" />
     <ClInclude Include="Domain\enums\DepositResult.h" />
@@ -170,6 +172,7 @@
     <ClInclude Include="Domain\Models\Accounts\SavingsAccount.h" />
     <ClInclude Include="Domain\Models\Effects\Effect.h" />
     <ClInclude Include="Domain\Models\Effects\EffectTarget.h" />
+    <ClInclude Include="Domain\Models\services\TransferFeeCalculator.h" />
     <ClInclude Include="Domain\Models\services\TransferOperation.h" />
     <ClInclude Include="Domain\Models\Transaction.h" />
     <ClInclude Include="Domain\Models\TransactionEntry.h" />

@@ -59,7 +59,7 @@ const Money& Transaction::GetAmount() const {
 	return amount;
 }
 
-int Transaction::GetFromAccountId() const {
+int Transaction::GetFromAccountId() const {	
 	return fromAccountId;
 }
 

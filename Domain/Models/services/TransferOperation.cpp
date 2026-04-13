@@ -6,7 +6,8 @@
  std::vector<Effect> TransferOperation::CreateEffects(
 	Account& accountA,
 	Account& accountB,
-	Money amount) {
+	Money amount,
+	 Money& fee) {
 
 	auto accountAResult = accountA.CanWithdraw(amount);
 	auto accountBResult = accountB.CanDeposit(amount);
@@ -21,8 +22,18 @@
 		throw InvalidDepositException(accountBResult);
 	}
 
-	return {
+	if (fee == Money(0)) {
+		return {
 		Effect(EffectTarget{TargetType::CustomerAccount,accountA.GetId()},-amount,EffectReason::Transfer),
 		Effect(EffectTarget{TargetType::CustomerAccount,accountB.GetId()},amount,EffectReason::Transfer),
+		};
+	}
+
+	return {
+		Effect(EffectTarget{TargetType::CustomerAccount,accountA.GetId()},-amount,EffectReason::Transfer),
+		Effect(EffectTarget{TargetType::CustomerAccount,accountA.GetId()},-fee,EffectReason::TransferFee),
+		Effect(EffectTarget{TargetType::BankRevenue, BankContracts::BankRevenueId},fee,EffectReason::TransferFee),
+		Effect(EffectTarget{TargetType::CustomerAccount,accountB.GetId()},amount,EffectReason::Transfer),
 	};
+	
 };

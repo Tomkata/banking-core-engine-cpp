@@ -1,13 +1,11 @@
 	#pragma once
 	#include "../Accounts/Account.h"
-
+	#include "../../../Domain/BankConstants.h"
 
 	#include <chrono>
 	#include <iostream>
 
 	class DepositAccount : public Account {
-		static const int VaultId = 100;
-		static const int BankRevenueId = 101;
 
 	private:
 		std::chrono::system_clock::time_point createdAccountDate;
@@ -60,16 +58,16 @@
 				 if (penalty != Money(0)) {
 					 return {
 								Effect(EffectTarget{TargetType::CustomerAccount, GetId()}, -amount,  EffectReason::Withdraw),
-								Effect(EffectTarget{TargetType::Vault, VaultId},                -amount,  EffectReason::Withdraw),
+								Effect(EffectTarget{TargetType::Vault, BankContracts::VaultId},                -amount,  EffectReason::Withdraw),
 								Effect(EffectTarget{TargetType::CustomerAccount, GetId()}, -penalty, EffectReason::EarlyWithdrawalPenalty),
-								Effect(EffectTarget{TargetType::BankRevenue, BankRevenueId},  penalty, EffectReason::EarlyWithdrawalPenalty)
+								Effect(EffectTarget{TargetType::BankRevenue, BankContracts::BankRevenueId},  penalty, EffectReason::EarlyWithdrawalPenalty)
 					 };
 				 }
 			 }
 
 			 return {
 			Effect(EffectTarget{TargetType::CustomerAccount, GetId()}, -amount, EffectReason::Withdraw),
-			Effect(EffectTarget{TargetType::Vault, VaultId},                -amount, EffectReason::Withdraw)
+			Effect(EffectTarget{TargetType::Vault, BankContracts::VaultId}, -amount, EffectReason::Withdraw)
 			 };
 
 		 }

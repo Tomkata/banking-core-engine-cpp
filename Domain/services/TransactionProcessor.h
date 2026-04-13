@@ -6,6 +6,8 @@
 #include "../interfaces/IAccountRepository.h"
 #include "../Mapper/EntryMapper.h"
 #include "../Interfaces/IUnitOfWork.h"
+#include "../Models/services/TransferFeeCalculator.h"
+#include "../../Domain/Models/services/TransferOperation.h"
 
 class TransactionProcessor {
 private:
@@ -13,17 +15,23 @@ private:
 	ITransactionRepository& transactionRepo;
 	EntryMapper& mapper;
 	IUnitOfWork& uow;
+	TransferFeeCalculator& calc;
+	TransferOperation& transferOperation;
 
 public:
 	TransactionProcessor(IAccountRepository& accountRepo,
 						ITransactionRepository& transactionRepo,
 						 EntryMapper& mapper,
-						 IUnitOfWork& uow)
+						 IUnitOfWork& uow,
+						 TransferFeeCalculator& calc,
+						TransferOperation& transferOperation)
 		:
 		accountRepo(accountRepo),	
 		transactionRepo(transactionRepo),	
 		mapper(mapper),
-	uow(uow){
+		uow(uow),
+		calc(calc),
+		transferOperation(transferOperation){
 	}
 	void Transfer(int fromAccountId, int toAccountId, Money amount);
 	void Withdraw(int fromAccountId, Money amount);

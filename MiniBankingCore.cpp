@@ -8,9 +8,12 @@
 
 
 #include "../MiniBankingCore/Domain/Models/Transaction.h"
+#include "../MiniBankingCore/Domain/Models/services/TransferFeeCalculator.h"
+#include "../MiniBankingCore/Domain/Models/services/TransferOperation.h"
 
 #include "../MiniBankingCore/Infrastructure/Repositories/SqliteAccountRepository.h"
 #include "../MiniBankingCore/Infrastructure/Repositories/SqliteTransactionRepository.h"
+#include "../MiniBankingCore/Infrastructure/SqliteUnitOfWork.h"
 
 #include "Domain/services/TransactionProcessor.h"
 #include "Domain/Mapper/EntryMapper.h"
@@ -65,72 +68,53 @@ balance_cents INTEGER NOT NULL
     FOREIGN KEY(account_id) REFERENCES accounts(id)
 );)");
 
-    
+    //db.Execute("DELETE FROM accounts;");
+    //db.Execute("DELETE FROM transactions;");
+    //db.Execute("DELETE FROM transaction_entries;");
+    //db.Execute("DELETE FROM sqlite_sequence WHERE name='accounts';");
+
     SqliteAccountRepository repo(db);
     EntryMapper mapper;
     SqliteTransactionRepository transactionRepo(db);
+    SqliteUnitOfWork uow(db);
+    TransferFeeCalculator tranferFeeCalc;
+    TransferOperation trOperation;
+    TransactionProcessor processor(repo, transactionRepo, mapper, uow, tranferFeeCalc, trOperation);
 
-    TransactionProcessor processor(repo, transactionRepo, mapper);
 
+    repo.Add(CheckingAccount());
+    repo.Add(CheckingAccount());
+    try
+    {
+        processor.Deposit(1, Money(50000)); // 500 лв
 
-   DepositAccount acc(6,0.02);
+        auto before1 = repo.FindById(1)->GetBalance().GetCents();
+        auto before2 = repo.FindById(2)->GetBalance().GetCents();
+
+        processor.Transfer(1, 2, Money(10000)); // 100 лв
+
+        auto after1 = repo.FindById(1)->GetBalance().GetCents();
+        auto after2 = repo.FindById(2)->GetBalance().GetCents();
+
+        std::cout << "acc1: " << before1 << " -> " << after1 << std::endl;
+        std::cout << "acc2: " << before2 << " -> " << after2 << std::endl;
+        long long expectedFee = tranferFeeCalc.CalculateFee(0.01, Money(10000)).GetCents();
+        std::cout << "expectedFee: " << expectedFee << std::endl;
+        std::cout << (before1 - after1 == 10000 + expectedFee && after2 - before2 == 10000 ? "PASS" : "FAIL") << std::endl;
+    }
+    catch (const std::exception& ex)
+    {
+        std::cout << ex.what() << std::endl;
+
+    }
    
-   try
-   {
-       if (!repo.Exists(acc.GetId())) {
-           repo.Add(acc);
 
-       }
-       processor.Withdraw(acc.GetId(), Money(100));
-       auto loaded = repo.FindById(acc.GetId());
 
-       std::cout << loaded->GetId() << std::endl;
-       std::cout << loaded->GetBalance() << std::endl;
 
-   }
-   catch (const std::exception& ex)
-   {
-       std::cout << ex.what() << std::endl;
-   }
+  
   
 
 
-
-
-    /*AccountRepository accountRepo;
-    TransactionRepository transactionRepo;
-    EntryMapper entryMapper;
-
-
-    accountRepo.Add(std::make_unique<CheckingAccount>());
-    accountRepo.Add(std::make_unique<DepositAccount>(6,0.02));
-
-    accountRepo.Add(std::make_unique<SavingsAccount>());
-   
-    TransactionProcessor processor(accountRepo,transactionRepo, entryMapper);
-    try {
-        processor.Withdraw(3, Money(50));
-    }
-    catch (const std::exception& ex) {
-        std::cout << "Expected error: " << ex.what() << '\n';
-    }   
-
-    try {
-        processor.Deposit(1, Money(10000));
-        processor.Withdraw(1, Money(100));
-        processor.Transfer(1,2,Money(100));
-        std::cout << "Operations completed successfully\n";
-    }
-    catch (const std::exception& ex) {
-        std::cout << "Error: " << ex.what() << '\n';
-    }
-    std::cout << "\n--- Accounts ---\n";
-    accountRepo.PrintAll();
-    std::cout <<  "" << '\n';
-    std::cout << "" << '\n';
-
-    std::cout << "\n--- Transactions ---\n";
-    transactionRepo.PrintAll();*/
     return 0;
 }
 

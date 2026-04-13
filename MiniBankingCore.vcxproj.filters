@@ -112,6 +112,9 @@
     <ClCompile Include="Infrastructure\Repositories\SqliteTransactionRepository.cpp">
       <Filter>Source Files\Infrastructure\Repositories</Filter>
     </ClCompile>
+    <ClCompile Include="Domain\Models\services\TransferFeeCalculator.cpp">
+      <Filter>Source Files\Domain\Models\services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Domain\Exceptions\Account\InvalidDepositException.h">
@@ -221,6 +224,12 @@
     </ClInclude>
     <ClInclude Include="Infrastructure\SqliteUnitOfWork.h">
       <Filter>Source Files\Infrastructure</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\services\TransferFeeCalculator.h">
+      <Filter>Source Files\Domain\Models\services</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\BankConstants.h">
+      <Filter>Source Files\Domain</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

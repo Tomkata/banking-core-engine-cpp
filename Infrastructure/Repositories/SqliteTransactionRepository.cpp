@@ -41,6 +41,7 @@ void SqliteTransactionRepository::Add( Transaction&& tr) {
 		if (sqlite3_step(stmt2) != SQLITE_DONE) {
 			throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
 		}
+
 	}
 }
 
