@@ -192,12 +192,6 @@
     <ClInclude Include="Domain\Models\services\TransferOperation.h">
       <Filter>Source Files\Domain\Models\services</Filter>
     </ClInclude>
-    <ClInclude Include="Domain\reposiories\IAccountRepository.h">
-      <Filter>Source Files\Domain\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\reposiories\ITransactionRepository.h">
-      <Filter>Source Files\Domain\Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="Infrastructure\Database\sqlite3.h">
       <Filter>Source Files\Infrastructure\Database</Filter>
     </ClInclude>
@@ -215,6 +209,18 @@
     </ClInclude>
     <ClInclude Include="Infrastructure\Repositories\SqliteTransactionRepository.h">
       <Filter>Source Files\Infrastructure\Repositories</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Interfaces\IAccountRepository.h">
+      <Filter>Source Files\Domain\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Interfaces\ITransactionRepository.h">
+      <Filter>Source Files\Domain\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Interfaces\IUnitOfWork.h">
+      <Filter>Source Files\Domain\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Infrastructure\SqliteUnitOfWork.h">
+      <Filter>Source Files\Infrastructure</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

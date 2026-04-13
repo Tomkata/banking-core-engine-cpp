@@ -13,7 +13,7 @@ void SqliteAccountRepository::Add(const Account& account) {
 
 	sqlite3_stmt* stmt;
 
-	std::string sql = "INSERT INTO accounts (id,type,status,balance_cents) VALUES (?,?,?,?);";
+	std::string sql = "INSERT INTO accounts (type,status,balance_cents) VALUES (?,?,?);";
 
 	if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
 		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
@@ -23,10 +23,9 @@ void SqliteAccountRepository::Add(const Account& account) {
 
 	
 	//bind parameters
-	sqlite3_bind_int(stmt, 1, account.GetId());
-	sqlite3_bind_int(stmt, 2, static_cast<int>(account.GetType()));
-	sqlite3_bind_int(stmt, 3, static_cast<int>(account.GetStatus()));
-	sqlite3_bind_int64(stmt,4,account.GetBalance().GetCents());
+	sqlite3_bind_int(stmt, 1, static_cast<int>(account.GetType()));
+	sqlite3_bind_int(stmt, 2, static_cast<int>(account.GetStatus()));
+	sqlite3_bind_int64(stmt,3,account.GetBalance().GetCents());
 
 
 	if (sqlite3_step(stmt) != SQLITE_DONE) {

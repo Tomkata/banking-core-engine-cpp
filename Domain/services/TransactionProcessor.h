@@ -2,25 +2,28 @@
 
 
 #include "../Models/Transaction.h"
-#include "../reposiories/ITransactionRepository.h"
-#include "../reposiories/IAccountRepository.h"
+#include "../interfaces/ITransactionRepository.h"
+#include "../interfaces/IAccountRepository.h"
 #include "../Mapper/EntryMapper.h"
-
+#include "../Interfaces/IUnitOfWork.h"
 
 class TransactionProcessor {
 private:
 	IAccountRepository& accountRepo;
 	ITransactionRepository& transactionRepo;
 	EntryMapper& mapper;
+	IUnitOfWork& uow;
 
 public:
 	TransactionProcessor(IAccountRepository& accountRepo,
 						ITransactionRepository& transactionRepo,
-						 EntryMapper& mapper)
+						 EntryMapper& mapper,
+						 IUnitOfWork& uow)
 		:
 		accountRepo(accountRepo),	
 		transactionRepo(transactionRepo),	
-		mapper(mapper){
+		mapper(mapper),
+	uow(uow){
 	}
 	void Transfer(int fromAccountId, int toAccountId, Money amount);
 	void Withdraw(int fromAccountId, Money amount);

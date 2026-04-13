@@ -1,5 +1,5 @@
 #include "TransactionProcessor.h"
-#include "../reposiories/TransactionRepository.h"
+#include "../Interfaces/ITransactionRepository.h"
 
 #include "../Models/services/TransferOperation.h"
 
@@ -101,9 +101,10 @@ void TransactionProcessor::Withdraw(int fromAccountId, Money amount) {
 
 
 template<typename Func>
-std::vector<Effect> TransactionProcessor::ExecuteTransaction(Transaction& tr, Func action) {
+std::vector<Effect> TransactionProcessor::ExecuteTransaction(Transaction&	, Func action) {
 	std::exception_ptr eptr = nullptr;
 	std::vector<Effect> effects;
+	uow.BeginTransaction();
 	try
 	{
 		effects = action();
@@ -111,18 +112,17 @@ std::vector<Effect> TransactionProcessor::ExecuteTransaction(Transaction& tr, Fu
 		{
 			tr.MarkSuccess();
 		}
+		ApplyEffects(effects);
+		transactionRepo.Add(std::move(tr));
+		uow.Commit();
 	}
 	catch (const std::exception& ex)
 	{
 		tr.MarkFailed(ex.what());
-		transactionRepo.Update(tr);
+		uow.Rollback();
 		eptr = std::current_exception();
-
 	}
 	
-	ApplyEffects(effects);
-	transactionRepo.Add(std::move(tr));
-
 	if (eptr)
 		std::rethrow_exception(eptr);
 
@@ -185,6 +185,8 @@ void TransactionProcessor::ApplyEffects(const std::vector<Effect>& effects) {
 	for (auto& [accountId, acc] : loadedAccounts) {
 
 		accountRepo.Update(*acc);
+		std::cout << "Updating account " << acc->GetId()
+			<< " new balance: " << acc->GetBalance().GetCents() << "\n";
 	}
 	
 }

@@ -160,6 +160,9 @@
     <ClInclude Include="Domain\Exceptions\Account\InsufficientbalanceException.h" />
     <ClInclude Include="Domain\Exceptions\Account\InvalidDepositException.h" />
     <ClInclude Include="Domain\Exceptions\Account\InvalidWithdrawException.h" />
+    <ClInclude Include="Domain\Interfaces\IAccountRepository.h" />
+    <ClInclude Include="Domain\Interfaces\ITransactionRepository.h" />
+    <ClInclude Include="Domain\Interfaces\IUnitOfWork.h" />
     <ClInclude Include="Domain\Mapper\EntryMapper.h" />
     <ClInclude Include="Domain\Models\Accounts\Account.h" />
     <ClInclude Include="Domain\Models\Accounts\CheckingAccount.h" />
@@ -170,8 +173,6 @@
     <ClInclude Include="Domain\Models\services\TransferOperation.h" />
     <ClInclude Include="Domain\Models\Transaction.h" />
     <ClInclude Include="Domain\Models\TransactionEntry.h" />
-    <ClInclude Include="Domain\reposiories\IAccountRepository.h" />
-    <ClInclude Include="Domain\reposiories\ITransactionRepository.h" />
     <ClInclude Include="Domain\services\TransactionProcessor.h" />
     <ClInclude Include="Domain\ValueObjects\Money.h" />
     <ClInclude Include="EffectReason.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Infrastructure\Factories\AccountFactory.h" />
     <ClInclude Include="Infrastructure\Repositories\SqliteAccountRepository.h" />
     <ClInclude Include="Infrastructure\Repositories\SqliteTransactionRepository.h" />
+    <ClInclude Include="Infrastructure\SqliteUnitOfWork.h" />
     <ClInclude Include="TargetType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

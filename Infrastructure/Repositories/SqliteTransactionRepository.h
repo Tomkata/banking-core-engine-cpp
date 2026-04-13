@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../Domain/Models/Transaction.h"
-#include "../../Domain/reposiories/ITransactionRepository.h"
+#include "../../Domain/interfaces/ITransactionRepository.h"
 #include "../Database/Database.h"
 
 class SqliteTransactionRepository : public ITransactionRepository {

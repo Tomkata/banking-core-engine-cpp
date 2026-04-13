@@ -25,8 +25,8 @@ int main()
     Database db("bank.db");
 
     db.Execute(R"(
-    CREATE TABLE IF NOT EXISTS accounts(
-id INTEGER PRIMARY KEY,
+    CREATE TABLE IF NOT EXISTS accounts (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
 type INTEGER NOT NULL,
 status INTEGER NOT NULL,
 balance_cents INTEGER NOT NULL
@@ -35,7 +35,7 @@ balance_cents INTEGER NOT NULL
 
     db.Execute(R"(
     CREATE TABLE IF NOT EXISTS transactions(
-    id INTEGER PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     type INTEGER NOT NULL,
     status INTEGER NOT NULL,
     amount_cents INTEGER NOT NULL,
@@ -74,11 +74,25 @@ balance_cents INTEGER NOT NULL
 
 
    DepositAccount acc(6,0.02);
-   DepositAccount acc2(6, 0.02);
    
+   try
+   {
+       if (!repo.Exists(acc.GetId())) {
+           repo.Add(acc);
 
-   processor.Transfer(acc.GetId(), acc2.GetId(), Money(100));
-   processor.Deposit(acc.GetId(), Money(100));
+       }
+       processor.Withdraw(acc.GetId(), Money(100));
+       auto loaded = repo.FindById(acc.GetId());
+
+       std::cout << loaded->GetId() << std::endl;
+       std::cout << loaded->GetBalance() << std::endl;
+
+   }
+   catch (const std::exception& ex)
+   {
+       std::cout << ex.what() << std::endl;
+   }
+  
 
 
 

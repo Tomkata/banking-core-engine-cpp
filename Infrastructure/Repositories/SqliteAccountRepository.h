@@ -1,6 +1,6 @@
 #pragma once
 #include "../../Domain/Models/Accounts/Account.h"
-#include "../../Domain/reposiories/IAccountRepository.h"
+#include "../../Domain/interfaces/IAccountRepository.h"
 #include "../Database/Database.h"
 
 class SqliteAccountRepository : public IAccountRepository {
