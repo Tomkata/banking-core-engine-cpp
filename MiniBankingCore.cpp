@@ -107,13 +107,6 @@ balance_cents INTEGER NOT NULL
         std::cout << ex.what() << std::endl;
 
     }
-   
-
-
-
-  
-  
-
 
     return 0;
 }
