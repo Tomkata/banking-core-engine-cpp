@@ -30,5 +30,8 @@
     <ClInclude Include="Tests\FakeUnitOfWork.h">
       <Filter>Source Files\Tests</Filter>
     </ClInclude>
+    <ClInclude Include="Tests\ProcessorFixture.h">
+      <Filter>Source Files\Tests</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

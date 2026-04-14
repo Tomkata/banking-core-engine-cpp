@@ -4,6 +4,7 @@
 #include "FakeAccountRepository.h"
 #include "FakeTransactionRepository.h"
 #include "FakeUnitOfWork.h"
+#include "ProcessorFixture.h"
 
 #include "../../MiniBankingCore/Domain/Mapper/EntryMapper.h"
 #include "../../MiniBankingCore/Domain/Models/services/TransferFeeCalculator.h"
@@ -12,72 +13,106 @@
 #include "../../MiniBankingCore/Domain/Exceptions/Account/InvalidWithdrawException.h"
 #include "../../MiniBankingCore/Domain/Exceptions/Account/InvalidDepositException.h"
 
+
+
+
+
 TEST_CASE("TransactionProccessor: Deposit increase account balance") {
-    FakeAccountRepository accountRepo;
-    FakeTransactionRepository transactionRepo;
-    FakeUnitOfWork uow;
-    EntryMapper mapper;
-    TransferFeeCalculator calc;
-    TransferOperation transferOperation;
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking,1,AccountStatus::Active,Money(0));
 
-    accountRepo.Seed(AccountType::Checking,1,AccountStatus::Active,Money(0));
 
-    TransactionProcessor trProccessor(accountRepo,transactionRepo,mapper, uow,calc,transferOperation);
+    pf.processor.Deposit(1,Money(100));
 
-    trProccessor.Deposit(1,Money(100));
-
-    auto acc = accountRepo.FindById(1);
+    auto acc = pf.accountRepo.FindById(1);
 
     REQUIRE(acc->GetBalance() == Money(100));
 }
 
 TEST_CASE("TransactionProccessor: deposit with closed account should thrown exception") {
-    FakeAccountRepository accountRepo;
-    FakeTransactionRepository transactionRepo;
-    FakeUnitOfWork uow;
-    EntryMapper mapper;
-    TransferFeeCalculator calc;
-    TransferOperation transferOperation;
+    ProcessorFixture pf;
 
-    accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Closed, Money(0));
-    TransactionProcessor processor(accountRepo, transactionRepo, mapper, uow, calc, transferOperation);
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Closed, Money(200));
 
-
-    REQUIRE_THROWS_AS(processor.Deposit(1, Money(100)), InvalidDepositException);
+    REQUIRE_THROWS_AS(pf.processor.Deposit(1, Money(100)), InvalidDepositException);
 }
 
+TEST_CASE("TransactionProccessor: deposit with blocked account should thrown exception") {
+    ProcessorFixture pf;
+
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Blocked, Money(200));
+
+    REQUIRE_THROWS_AS(pf.processor.Deposit(1, Money(100)), InvalidDepositException);
+}
 
 TEST_CASE("TransactionProccessor: Withdraw decrease account balance") {
-    FakeAccountRepository accountRepo;
-    FakeTransactionRepository transactionRepo;
-    FakeUnitOfWork uow;
-    EntryMapper mapper;
-    TransferFeeCalculator calc;
-    TransferOperation transferOperation;
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(200));
 
-    accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(200));
+   pf.processor.Withdraw(1, Money(100));
 
-    TransactionProcessor trProccessor(accountRepo, transactionRepo, mapper, uow, calc, transferOperation);
-
-    trProccessor.Withdraw(1, Money(100));
-
-    auto acc = accountRepo.FindById(1);
+    auto acc = pf.accountRepo.FindById(1);
 
     REQUIRE(acc->GetBalance() == Money(100));
 }
 
-TEST_CASE("TransactionProccessor: Invalid withdraw shoud thow exception") {
-    FakeAccountRepository accountRepo;
-    FakeTransactionRepository transactionRepo;
-    FakeUnitOfWork uow;
-    EntryMapper mapper;
-    TransferFeeCalculator calc;
-    TransferOperation transferOperation;
+TEST_CASE("TransactionProccessor: Invalid withdraw shoud throw exception") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(0));
 
-    accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(200));
 
-    TransactionProcessor trProccessor(accountRepo, transactionRepo, mapper, uow, calc, transferOperation);
+    REQUIRE_THROWS_AS(pf.processor.Withdraw(1, Money(-100)), InvalidWithdrawException);
+}
 
-    REQUIRE_THROWS_AS(trProccessor.Withdraw(1, Money(-100)), InvalidWithdrawException);
+TEST_CASE("TransactionProccessor: Withdraw from save account shoud throw exception") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Saving, 1, AccountStatus::Active, Money(0));
+
+
+    REQUIRE_THROWS_AS(pf.processor.Withdraw(1, Money(100)), InvalidWithdrawException);
+}
+
+TEST_CASE("TransactionProccessor: Transfer between two accounts shoud be successful") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(200));
+    pf.accountRepo.Seed(AccountType::Checking, 2, AccountStatus::Active, Money(0));
+
+    pf.processor.Transfer(1, 2, Money(100));
+    
+    auto acc1 = pf.accountRepo.FindById(1);
+    auto acc2 = pf.accountRepo.FindById(2);
+
+
+    REQUIRE(acc1->GetBalance() == Money(100));
+    REQUIRE(acc2->GetBalance() == Money(100));
+}
+
+TEST_CASE("TransactionProccessor: Transfer to invalid account shoud throw logic error") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(200));
+
+
+    REQUIRE_THROWS_AS(pf.processor.Transfer(1, -1, Money(100)),std::logic_error);
+    
+}
+
+
+TEST_CASE("TransactionProccessor: Transfer from frozen account shoud throw exception") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Frozen, Money(200));
+    pf.accountRepo.Seed(AccountType::Checking, 2, AccountStatus::Active, Money(200));
+
+
+    REQUIRE_THROWS_AS(pf.processor.Transfer(1, 2, Money(100)), InvalidWithdrawException);
+
+}
+
+TEST_CASE("TransactionProccessor: Transfer with insufficient balance shoud throw exception") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Frozen, Money(100));
+    pf.accountRepo.Seed(AccountType::Checking, 2, AccountStatus::Active, Money(0));
+
+
+    REQUIRE_THROWS_AS(pf.processor.Transfer(1, 2, Money(1000)), InvalidWithdrawException);
 
 }

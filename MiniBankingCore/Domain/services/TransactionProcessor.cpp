@@ -60,7 +60,7 @@ void TransactionProcessor::Transfer(int fromAccountId, int toAccountId, Money am
 		}
 
 	
-		auto fee = calc.CalculateFee(0.01,amount);
+		auto fee = calc.CalculateFee(0.00,amount);
 
 		auto effects = transferOperation.CreateEffects(*fromAccount,*toAccount,amount,fee);
 

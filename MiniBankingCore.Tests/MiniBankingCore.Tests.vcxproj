@@ -27,6 +27,7 @@
     <ClInclude Include="Tests\FakeAccountRepository.h" />
     <ClInclude Include="Tests\FakeTransactionRepository.h" />
     <ClInclude Include="Tests\FakeUnitOfWork.h" />
+    <ClInclude Include="Tests\ProcessorFixture.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniBankingCore.Lib\MiniBankingCore.Lib.vcxproj">
