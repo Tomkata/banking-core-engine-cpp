@@ -116,3 +116,57 @@ TEST_CASE("TransactionProccessor: Transfer with insufficient balance shoud throw
     REQUIRE_THROWS_AS(pf.processor.Transfer(1, 2, Money(1000)), InvalidWithdrawException);
 
 }
+
+TEST_CASE("Transaction is balanced") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(100));
+    pf.accountRepo.Seed(AccountType::Checking, 2, AccountStatus::Active, Money(0));
+
+     pf.processor.Transfer(1,2,Money(100));
+
+     auto& transactions = pf.transactionRepo.GetAll();
+
+     REQUIRE(transactions.size() == 1);
+     REQUIRE(transactions[0].isBalanced());
+}
+
+//TEST_CASE("Transaction is atomic - failure rolls back all changes") {
+//    ProcessorFixture pf;
+//
+//    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(200));
+//    pf.accountRepo.Seed(AccountType::Checking, 2, AccountStatus::Active, Money(0));
+//
+//    pf.accountRepo.SetFailOnUpdate(2);
+//
+//    REQUIRE_THROWS(pf.processor.Transfer(1, 2, Money(100)));
+//
+//    auto acc1Balance = pf.accountRepo.FindById(1)->GetBalance();
+//    auto acc2Balance = pf.accountRepo.FindById(2)->GetBalance();
+//
+//    REQUIRE(acc1Balance == Money(200));
+//    REQUIRE(acc2Balance == Money(0));
+//}
+
+
+
+TEST_CASE("Deposit account witdraw shoud have penatly before maturity date") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Deposit, 1, AccountStatus::Active, Money(1000),6,0.02);
+
+    pf.processor.Withdraw(1,Money(100));
+    auto acc = pf.accountRepo.FindById(1);
+
+
+    REQUIRE(acc->GetBalance() == Money(898));
+}
+
+TEST_CASE("Deposit account witdraw shoud not have panatly after maturity date") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Deposit, 1, AccountStatus::Active, Money(1000), 0, 0.02);
+
+    pf.processor.Withdraw(1, Money(100));
+    auto acc = pf.accountRepo.FindById(1);
+
+
+    REQUIRE(acc->GetBalance() == Money(900));
+}

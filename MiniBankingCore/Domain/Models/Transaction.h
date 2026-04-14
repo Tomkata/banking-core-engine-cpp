@@ -37,9 +37,9 @@ public:
 	const std::string& GetFailureReason() const;
 	void AddEntry(TransactionEntry&& entry);
 	const std::vector<TransactionEntry>& GetEntries() const;
+	bool isBalanced() const;
 
 private:	
 	void EnsureNotFinalized() const;
-	bool isBalanced() const;
 
 };

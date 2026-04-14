@@ -6,6 +6,9 @@
 
 class FakeAccountRepository : public IAccountRepository {
 private:
+    int failOnUpdateId = -1;
+
+private:
     struct AccountData {
         AccountType type;
         int id = 0;
@@ -39,6 +42,10 @@ public:
     }
 
     void Update(const Account& account) override {
+        if (account.GetId() == failOnUpdateId) {
+            throw std::runtime_error("Simulated update failure");
+        }
+
         auto it = accounts.find(account.GetId());
 
         if (it != accounts.end()) {
@@ -46,5 +53,10 @@ public:
             it->second.balance = account.GetBalance();
 
         }
+    }
+
+public:
+    void SetFailOnUpdate(int id) {
+        failOnUpdateId = id;
     }
 };
