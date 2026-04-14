@@ -1,0 +1,9 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="MiniBankingCore.Lib/MiniBankingCore.Lib.vcxproj" Id="7fbfae24-1b72-403d-962b-d82e336f0511" />
+  <Project Path="MiniBankingCore.Tests/MiniBankingCore.Tests.vcxproj" Id="11857ad7-28d3-40d5-9078-2f4e1ed2b168" />
+  <Project Path="MiniBankingCore/MiniBankingCore.vcxproj" Id="f03ba250-d305-49d9-843b-f44a48657de5" />
+</Solution>

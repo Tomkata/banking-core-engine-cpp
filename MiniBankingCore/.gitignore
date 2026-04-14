@@ -1,0 +1,16 @@
+# Build files
+x64/
+Debug/
+Release/
+
+# Visual Studio
+.vs/
+*.vcxproj.user
+*.VC.db
+
+# Temporary
+*.log
+*.tmp
+
+# Database files
+*.db

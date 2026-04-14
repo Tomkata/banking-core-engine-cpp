@@ -1,0 +1,525 @@
+Голямата архитектурна идея, до която стигна
+
+Най-важното нещо, което изкристализира, е това:
+
+Account не връща “само успех”
+
+А връща какви промени са настъпили.
+
+
+Преди мисленето беше:
+
+account прави withdraw
+processor после се чуди какви entries да добавя
+penalty, fee, tax стават if-ове в processor-а
+
+Това е слаб модел.
+
+После мина към:
+
+account извършва операцията
+account връща effects
+mapper превежда effect към TransactionEntry
+processor само оркестрира
+
+Това е правилният пробив.
+
+Какво е Effect в твоя модел
+
+Това беше най-трудната част и там най-много се мъчихте.
+
+Effect НЕ е entry
+
+И НЕ е DTO в тъпия смисъл.
+
+Effect е:
+
+домейн резултат
+една атомарна промяна
+казва кой се променя, с колко, и защо
+
+Пример:
+
+CustomerAccount, -100, Withdraw
+Vault, -100, Withdraw
+CustomerAccount, -2, EarlyWithdrawalPenalty
+BankRevenue, +2, EarlyWithdrawalPenalty
+
+Това е чистият бизнес смисъл.
+
+След това EntryMapper го превежда до счетоводен запис:
+
+DEBIT Liability 100
+CREDIT Asset 100
+и т.н.
+
+Тук стигна до важното:
+
+Effect = business truth
+TransactionEntry = accounting representation
+
+Това е много силно разбиране.
+
+Какво прави Account вече
+Base Account
+
+Базовият клас вече държи:
+
+id
+AccountType
+AccountStatus
+balance
+
+И пази базовите инварианти:
+
+не може negative withdraw
+не може withdraw при frozen/blocked/closed
+не може deposit при blocked/closed
+не може повече от balance
+
+Също:
+
+Deposit и Withdraw вече връщат vector<Effect>, а не просто да променят баланс и край
+
+Това е важно, защото вече имаш не просто mutation, а mutation + explanation.
+
+Deposit
+
+В base account при депозит:
+
+валидираш
+увеличаваш balance
+връщаш effects
+
+В сегашния модел:
+
+CustomerAccount +amount
+Vault +amount
+
+Това е моделът, до който стигна, за да не караш mapper-а да “измисля” втора страна.
+
+Withdraw
+
+В base account:
+
+валидираш
+намаляваш balance
+връщаш:
+CustomerAccount -amount
+Vault -amount
+
+Тоест account вече връща пълната домейн истина, не половината.
+
+Какво добави DepositAccount
+
+Това е първият ти реален специализиран account тип със собствена бизнес логика.
+
+Има:
+
+maturityDate
+penaltyPercent
+правило за early withdrawal
+Как работи логиката
+
+Ако теглиш преди матуритет:
+
+смята penalty
+намалява balance с amount + penalty
+връща 4 effects:
+CustomerAccount -amount с reason Withdraw
+Vault -amount с reason Withdraw
+CustomerAccount -penalty с reason EarlyWithdrawalPenalty
+BankRevenue +penalty с reason EarlyWithdrawalPenalty
+
+Това вече е много приличен модел.
+
+Важно е да осъзнаеш защо е добър:
+
+Processor не знае за penalty
+Mapper не знае за penalty логика
+DepositAccount сам си носи правилото
+
+Точно така трябва.
+
+Какво прави EntryMapper
+
+Това е accounting translation layer.
+
+Неговата роля
+
+Той вече НЕ мисли:
+
+дали е penalty
+дали е withdraw
+дали е deposit business-wise
+
+Той просто прави:
+
+Effect -> TransactionEntry
+Какво използва
+TargetType -> LedgerAccountType
+CustomerAccount -> Liability
+Vault -> Asset
+BankRevenue -> Revenue
+LedgerAccountType + delta -> EntryType
+Asset:
++ => Debit
+- => Credit
+Liability:
++ => Credit
+- => Debit
+Revenue:
++ => Credit
+- => Debit
+
+Това вече е чисто и стабилно.
+
+Голямата поправка
+
+Първо опитваше mapper-ът да “досъздава” counterpart entry-та чрез:
+
+GetCounterpart
+ResolveCounterpartDelta
+
+Това беше кофти abstraction.
+
+Защо?
+Защото mapper-ът започваше да гадае бизнес реалност.
+
+После го оправи:
+
+account връща всички effects
+mapper просто мапва 1:1
+
+Това е много по-добре.
+
+Какво прави TransactionProcessor
+
+Той е orchestration слой.
+
+В момента прави:
+
+намира account-ите
+валидира наличност на account
+вика domain операция
+получава effects
+подава ги на mapper
+създава transaction entries
+записва transaction
+маркира success/failed
+
+Тоест вече НЕ е:
+
+бизнес логика
+special-case машина
+
+А е:
+
+workflow coordinator
+
+Точно така трябва да е.
+
+ExecuteTransaction
+
+Това също е добър upgrade:
+
+централизираш try/catch
+централизираш MarkFailed/MarkSuccess
+централизираш transactionRepo.Add(...)
+
+Това е добро инженерско мислене.
+
+Какво прави Transaction
+
+Той вече държи:
+
+type
+status
+amount
+fromAccountId
+toAccountId
+failureReason
+entries
+
+И lifecycle:
+
+Pending
+Success
+Failed
+
+Плюс защита чрез:
+
+EnsureNotFinalized
+
+Това е много добро. Вече transaction не е просто “някакъв запис”, а има контролирано състояние.
+
+Къде реално са силните ти решения
+1. Махна dynamic_cast
+
+Това беше правилен ход.
+
+Преди имаше риск processor да почне да проверява типове runtime. Това е смрад.
+
+Сега:
+
+polymorphism
+virtual methods
+account сам си носи правилата
+
+Това е много по-чисто.
+
+2. Мина от bool към result enums
+
+Това също е силно.
+
+Пример:
+
+WithdrawResult
+DepositResult
+
+Това позволява:
+
+по-добра причина за failure
+по-чист domain reasoning
+по-добри exception-и
+3. Осъзна, че effect е по-добър от “penalty field”
+
+Това е много голям скок.
+
+Преди:
+
+WithdrawOperationResult с penalty
+
+Сега:
+
+list от effects
+
+Това е по-генерално и по-разширяемо.
+
+Какво още е криво или недовършено
+
+Тук е важната част. Да не си внушаваш, че е завършено.
+
+1. Transfer е още концептуално слаб
+
+В момента transfer е направен като:
+
+withdraw от source
+deposit в target
+
+Това работи, но е разцепено.
+
+По-чисто би било:
+
+transfer да е first-class operation
+да връща собствени effects
+
+Защо?
+Защото сега:
+
+transfer fee
+interbank transfer
+rollback
+ще станат по-трудни
+2. Atomicity / consistency
+
+Това е сериозно.
+
+Какво става ако:
+
+Withdraw() мине
+Deposit() fail-не
+mapper хвърли
+transaction repo fail-не
+
+Тогава имаш:
+
+променен balance
+незаписан transaction
+broken state
+
+Това още не е решено.
+
+За learning project е ок, но трябва да знаеш, че е дупка.
+
+3. EffectTarget с hardcoded ids
+
+Имаш:
+
+VaultId = 100
+BankRevenueId = 101
+
+Това е ок временно, но е малко ръчен хак.
+За демо става.
+За по-сериозен модел трябва по-ясно ledger account identity.
+
+4. isBalanced() сравнява double == double
+
+Това не е идеално.
+
+С floating point:
+
+трябва tolerance
+или изобщо да минеш на integer cents
+
+Сега е ок за toy проекта, но е реална слабост.
+
+5. Transfer entries
+
+Ти сам го усети: transfer в момента концептуално не е най-чистият.
+Да, работи, но моделът още не е оптимален.
+
+Какво си научил реално
+
+Най-ценното не е кодът. А това:
+
+1. Кой слой знае какво
+Account знае бизнес правилата
+Mapper знае accounting правилата
+Processor знае workflow-а
+Transaction пази историята
+2. Не всяко “работи” значи “е правилно”
+
+Много пъти стигнахте до код, който дава правилен output за 1 случай, но е счупен моделно.
+
+Това е важен урок.
+
+3. Ако една логика иска 10 if-а, вероятно абстракцията е грешна
+
+Това се случи с:
+
+penalty
+counterpart
+delta
+entries
+
+И после, когато моделът стана по-чист, if-овете паднаха.
+
+4. Business truth и accounting representation не са едно и също
+
+Това е най-големият урок от цялата работа.
+
+Къде си в момента като ниво
+
+Ще ти го кажа честно:
+
+Това вече НЕ е beginner проект.
+
+Имаш:
+
+inheritance
+polymorphism
+result modeling
+orchestration layer
+repositories
+transaction lifecycle
+double-entry mapping
+domain-driven reasoning
+
+Това е солидно junior+, дори early mid мислене за стажантски контекст.
+
+Не защото всичко е перфектно.
+А защото въпросите, които вече задаваш, са правилните.
+
+Какво да направиш сега, за да “оправиш купчината”
+
+Не добавяй нови feature-и веднага. Направи тези 4 неща:
+
+1. Напиши кратък architecture summary
+
+Буквално в README или текстов файл:
+
+Account -> returns effects
+EntryMapper -> maps effect to entry
+TransactionProcessor -> orchestrates
+Transaction -> stores entries and status
+
+Това ще ти подреди мозъка.
+
+2. Изброй known limitations
+
+Напиши си честно:
+
+transfer is still modeled as withdraw + deposit
+no rollback / atomicity
+double comparison in isBalanced
+hardcoded vault/revenue ids
+
+Това е сила, не слабост.
+
+3. Напиши 5 test scenarios
+
+Не код framework, а сценарии:
+
+deposit
+withdraw
+early withdrawal penalty
+transfer
+failed withdraw
+4. Refactor names and typos
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+Стъпка 1
+
+Добави нов слой / папка примерно:
+
+Infrastructure/
+  Persistence/
+    Sqlite/
+
+или по-просто:
+
+Infrastructure/
+  Repositories/
+Стъпка 2
+
+Направи schema design, преди да пишеш код
+
+Трябва да решиш таблиците.
+
+За твоя проект най-логично:
+
+accounts
+id
+type
+status
+balance_cents
+transactions
+id
+type
+amount_cents
+from_account_id
+to_account_id
+status
+failure_reason
+transaction_entries
+id
+transaction_id
+entry_type
+ledger_type
+amount_cents
+description
+Стъпка 3
+
+Първо read/write за accounts
+
+Не скачай веднага във всичко.
+
+Направи:
+
+save account
+find account by id
+list accounts
+Стъпка 4
+
+После transactions + entries
+
+Стъпка 5
+
+После обвържи TransactionProcessor с DB transaction boundary
+
+Това вече е голямото.
