@@ -170,3 +170,22 @@ TEST_CASE("Deposit account witdraw shoud not have panatly after maturity date") 
 
     REQUIRE(acc->GetBalance() == Money(900));
 }
+
+TEST_CASE("Deposit account early withdraw with insufficient balance for penalty should throw") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Deposit, 1, AccountStatus::Active, Money(1000), 6, 0.02);
+
+
+    REQUIRE_THROWS_AS(pf.processor.Withdraw(1, Money(1000)), InvalidWithdrawException);
+}
+
+TEST_CASE("Deposit account withdraw with exact avalaible balance shoud be successful") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Deposit, 1, AccountStatus::Active, Money(1000), 6, 0.02);
+
+    pf.processor.Withdraw(1, Money(980));
+    auto acc = pf.accountRepo.FindById(1);
+
+
+    REQUIRE(acc->GetBalance() == Money(0.4));
+}
