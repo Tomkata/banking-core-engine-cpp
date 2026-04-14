@@ -16,6 +16,9 @@
     <ClCompile Include="Tests\TransactionTests.cpp">
       <Filter>Source Files\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\EntryMapperTests.cpp">
+      <Filter>Source Files\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tests\catch_amalgamated.hpp">

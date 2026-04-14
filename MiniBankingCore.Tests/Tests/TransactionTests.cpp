@@ -189,3 +189,28 @@ TEST_CASE("Deposit account withdraw with exact avalaible balance shoud be succes
 
     REQUIRE(acc->GetBalance() == Money(0.4));
 }
+
+
+TEST_CASE("Withdraw generates correct effects") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(1000), 6, 0.02);
+
+    auto acc = pf.accountRepo.FindById(1);
+
+    auto effects = acc->Withdraw(Money(100));
+
+    REQUIRE(effects.size() == 2);
+    REQUIRE(effects[0].delta == Money(-100));
+}
+
+TEST_CASE("Deposit generates correct effects") {
+    ProcessorFixture pf;
+    pf.accountRepo.Seed(AccountType::Checking, 1, AccountStatus::Active, Money(1000), 6, 0.02);
+
+    auto acc = pf.accountRepo.FindById(1);
+
+    auto effects = acc->Deposit(Money(100));
+
+    REQUIRE(effects.size() == 2);
+    REQUIRE(effects[0].delta == Money(100));
+}
