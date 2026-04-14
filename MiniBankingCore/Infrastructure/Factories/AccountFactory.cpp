@@ -15,7 +15,7 @@ std::unique_ptr<Account> AccountFactory::Create(AccountType type,
 	case AccountType::Deposit:  return std::make_unique<DepositAccount>(id, status, balance, months, rate);
 	case AccountType::Saving:return std::make_unique<SavingsAccount>(id, status, balance);
 	default:
-		throw std::runtime_error("Invalid account type");
+		throw std::runtime_error("Invalid account type");	
 		break;
 	}
 }
