@@ -21,5 +21,14 @@
     <ClInclude Include="Tests\catch_amalgamated.hpp">
       <Filter>Source Files\Tests</Filter>
     </ClInclude>
+    <ClInclude Include="Tests\FakeAccountRepository.h">
+      <Filter>Source Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests\FakeTransactionRepository.h">
+      <Filter>Source Files\Tests</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests\FakeUnitOfWork.h">
+      <Filter>Source Files\Tests</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

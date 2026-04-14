@@ -1,0 +1,18 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.ipch
+*.VC.db
+*.VC.db-shm
+*.VC.db-wal
+*.VC.opendb
+*.backup.json
+DocumentLayout.json
+HierarchyCache.v1.txt
+x64/
+Debug/
+Release/
+
+# Database
+*.db

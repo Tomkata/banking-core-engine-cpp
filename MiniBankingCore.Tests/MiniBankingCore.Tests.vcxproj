@@ -24,6 +24,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Tests\catch_amalgamated.hpp" />
+    <ClInclude Include="Tests\FakeAccountRepository.h" />
+    <ClInclude Include="Tests\FakeTransactionRepository.h" />
+    <ClInclude Include="Tests\FakeUnitOfWork.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MiniBankingCore.Lib\MiniBankingCore.Lib.vcxproj">

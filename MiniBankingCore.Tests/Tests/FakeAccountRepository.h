@@ -8,11 +8,11 @@ class FakeAccountRepository : public IAccountRepository {
 private:
     struct AccountData {
         AccountType type;
-        int id;
+        int id = 0;
         AccountStatus status;
         Money balance;
-        int months;
-        double rate;
+        int months =0;
+        double rate = 0.0;
     };
 
     std::unordered_map<int, AccountData> accounts;
