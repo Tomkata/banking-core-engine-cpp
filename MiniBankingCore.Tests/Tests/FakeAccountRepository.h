@@ -7,58 +7,63 @@
 
 class FakeAccountRepository : public IAccountRepository {
 private:
-    int failOnUpdateId = -1;
+	int failOnUpdateId = -1;
 
 private:
-    struct AccountData {
-        AccountType type;
-        int id = 0;
-        AccountStatus status;
-        Money balance;
-        int months =0;
-        double rate = 0.0;
-    };
+	struct AccountData {
+		AccountType type;
+		int id = 0;
+		AccountStatus status;
+		Money balance;
+		int months = 0;
+		double rate = 0.0;
+	};
 
-    std::unordered_map<int, AccountData> accounts;
-
-public:
-    void Seed(AccountType type, int id, AccountStatus status, Money balance,
-        int months = 0, double rate = 0.0) {
-        accounts[id] = { type,id,status,balance,months,rate };
-    }
-
-    std::unique_ptr<Account> FindById(int id) override {
-        auto it = accounts.find(id);
-
-        if (it == accounts.end()) return nullptr;
-
-        auto& d = it->second;
-        return AccountFactory::Create(d.type, d.id, d.status, d.balance, d.months, d.rate,
-            std::chrono::system_clock::now());
-    }
-
-    void Add(const Account& account) override {}
-
-    bool Exists(int id) const override{
-        return accounts.find(id) != accounts.end();
-    }
-
-    void Update(const Account& account) override {
-        if (account.GetId() == failOnUpdateId) {
-            throw std::runtime_error("Simulated update failure");
-        }
-
-        auto it = accounts.find(account.GetId());
-
-        if (it != accounts.end()) {
-            it->second.status = account.GetStatus();
-            it->second.balance = account.GetBalance();
-
-        }
-    }
+	std::unordered_map<int, AccountData> accounts;
 
 public:
-    void SetFailOnUpdate(int id) {
-        failOnUpdateId = id;
-    }
+	void Seed(AccountType type, int id, AccountStatus status, Money balance,
+		int months = 0, double rate = 0.0) {
+		accounts[id] = { type,id,status,balance,months,rate };
+	}
+
+	std::unique_ptr<Account> FindById(int id) override {
+		auto it = accounts.find(id);
+
+		if (it == accounts.end()) return nullptr;
+
+		auto& d = it->second;
+		return AccountFactory::Create(d.type, d.id, d.status, d.balance, d.months, d.rate,
+			std::chrono::system_clock::now());
+	}
+
+	void Add(const Account& account) override {}
+
+	bool Exists(int id) const override {
+		return accounts.find(id) != accounts.end();
+	}
+
+	void Update(const Account& account) override {
+		if (account.GetId() == failOnUpdateId) {
+			throw std::runtime_error("Simulated update failure");
+		}
+
+		auto it = accounts.find(account.GetId());
+
+		if (it != accounts.end()) {
+			it->second.status = account.GetStatus();
+			it->second.balance = account.GetBalance();
+
+		}
+	}
+
+public:
+	void SetFailOnUpdate(int id) {
+		failOnUpdateId = id;
+	}
+
+	std::vector<std::unique_ptr<SavingsAccount>> FindAllSavings() override{
+			std::vector<std::unique_ptr<SavingsAccount>> accounts;
+	return accounts;
+	}
 };

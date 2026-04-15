@@ -1,5 +1,6 @@
 #pragma once
 #include "../Models/Accounts/Account.h"
+#include "../../Domain/Models/Accounts/SavingsAccount.h"
 
 #include <vector>
 #include <memory> 
@@ -12,4 +13,5 @@ public:
 	virtual std::unique_ptr<Account>  FindById(int id) = 0;
 	virtual bool Exists(int id) const = 0;
 	virtual void Update(const Account& account) = 0;
+	virtual std::vector<std::unique_ptr<SavingsAccount>> FindAllSavings() = 0;
 };

@@ -36,7 +36,7 @@ public:
 	}
 
 public:
-	double GetInteresrtRate() const {
+	double GetInterestRate() const {
 		return interestRate;
 	}
 

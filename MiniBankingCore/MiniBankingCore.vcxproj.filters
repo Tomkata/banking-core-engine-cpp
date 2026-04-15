@@ -115,6 +115,9 @@
     <ClCompile Include="Domain\Models\services\TransferFeeCalculator.cpp">
       <Filter>Source Files\Domain\Models\services</Filter>
     </ClCompile>
+    <ClCompile Include="Domain\Models\services\InterestAccrualService.cpp">
+      <Filter>Source Files\Domain\Models\services</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Domain\Exceptions\Account\InvalidDepositException.h">
@@ -230,6 +233,9 @@
     </ClInclude>
     <ClInclude Include="Domain\BankConstants.h">
       <Filter>Source Files\Domain</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Models\services\InterestAccrualService.h">
+      <Filter>Source Files\Domain\Models\services</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

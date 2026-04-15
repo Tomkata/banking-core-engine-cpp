@@ -8,7 +8,6 @@
 #include "../../Domain/Models/Accounts/DepositAccount.h"
 #include "../../Domain/Models/Accounts/SavingsAccount.h"
 
-
 void SqliteAccountRepository::Add(const Account& account) {
 
 	sqlite3_stmt* stmt;
@@ -67,7 +66,7 @@ void SqliteAccountRepository::Add(const Account& account) {
 		SqliteStatementGuard guard2{ stmt2 };
 
 		sqlite3_bind_int(stmt2, 1, saving.GetId());
-		sqlite3_bind_double(stmt2, 2, saving.GetInteresrtRate());
+		sqlite3_bind_double(stmt2, 2, saving.GetInterestRate());
 		auto lastAccrual = std::chrono::system_clock::to_time_t(saving.GetLastAccrualDate());
 		sqlite3_bind_int64(stmt2, 3, static_cast<long long>(lastAccrual));
 
@@ -207,4 +206,38 @@ std::pair<int, double> SqliteAccountRepository::FindDepositExtra(int id) {
 	}
 
 	return { months,interestRate };
+}
+
+
+std::vector<std::unique_ptr<SavingsAccount>> SqliteAccountRepository::FindAllSavings() {
+	sqlite3_stmt* stmt;
+	std::string sql = R"(SELECT accounts.id, type, status, balance_cents, s.interest_rate, s.lastAccrualDate
+FROM accounts
+INNER JOIN saving_accounts s ON accounts.id = s.account_id
+WHERE accounts.type = 2)";
+
+
+	if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
+	}
+	SqliteStatementGuard guard{ stmt };
+
+	std::vector<std::unique_ptr<SavingsAccount>> accounts;
+
+	while (sqlite3_step(stmt) == SQLITE_ROW) {
+		int id = sqlite3_column_int(stmt, 0);
+		int type = sqlite3_column_int(stmt, 1);
+		int status = sqlite3_column_int(stmt, 2);
+		long long balance = sqlite3_column_int64(stmt, 3);
+		double interestRate = sqlite3_column_double(stmt, 4);
+		long long lastAccrualTs = sqlite3_column_int64(stmt, 5);
+		std::chrono::system_clock::time_point lastAccrualDate = std::chrono::system_clock::from_time_t(static_cast<time_t>(lastAccrualTs));
+
+		accounts.push_back(
+			std::make_unique<SavingsAccount>(id, static_cast<AccountStatus>(status), Money(balance), interestRate, lastAccrualDate)
+		);
+	}
+
+
+	return accounts;
 }
