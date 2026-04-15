@@ -10,6 +10,8 @@
 #include "../MiniBankingCore/Domain/Models/Transaction.h"
 #include "../MiniBankingCore/Domain/Models/services/TransferFeeCalculator.h"
 #include "../MiniBankingCore/Domain/Models/services/TransferOperation.h"
+#include "../MiniBankingCore/Domain/Models/services/InterestAccrualService.h"
+
 
 #include "../MiniBankingCore/Infrastructure/Repositories/SqliteAccountRepository.h"
 #include "../MiniBankingCore/Infrastructure/Repositories/SqliteTransactionRepository.h"
@@ -88,10 +90,10 @@ balance_cents INTEGER NOT NULL
     TransferFeeCalculator tranferFeeCalc;
     TransferOperation trOperation;
     TransactionProcessor processor(repo, transactionRepo, mapper, uow, tranferFeeCalc, trOperation);
+    InterestAccrualService accrualService(repo,processor);
 
+    accrualService.AccrueAll();
 
-    repo.Add(CheckingAccount());
-    repo.Add(CheckingAccount());
     try
     {
         processor.Deposit(1, Money(50000)); // 500 лв

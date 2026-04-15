@@ -20,11 +20,11 @@ void SqliteAccountRepository::Add(const Account& account) {
 
 	SqliteStatementGuard guard{ stmt };
 
-	
+
 	//bind parameters
 	sqlite3_bind_int(stmt, 1, static_cast<int>(account.GetType()));
 	sqlite3_bind_int(stmt, 2, static_cast<int>(account.GetStatus()));
-	sqlite3_bind_int64(stmt,3,account.GetBalance().GetCents());
+	sqlite3_bind_int64(stmt, 3, account.GetBalance().GetCents());
 
 
 	if (sqlite3_step(stmt) != SQLITE_DONE) {
@@ -83,7 +83,7 @@ std::unique_ptr<Account> SqliteAccountRepository::FindById(int id) {
 
 
 
-	if (sqlite3_prepare_v2(db.GetConnection(),sql.c_str(), -1,&stmt , nullptr) != SQLITE_OK) {
+	if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
 		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
 	}
 
@@ -142,6 +142,26 @@ void  SqliteAccountRepository::Update(const Account& account) {
 	if (sqlite3_step(stmt) != SQLITE_DONE) {
 		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
 	}
+
+	if (account.GetType() == AccountType::Saving) {
+		auto& saving = static_cast<const SavingsAccount&>(account);
+		sqlite3_stmt* stmt2;
+		std::string sql2 = "UPDATE saving_accounts SET lastAccrualDate = ? WHERE account_id = ?";
+
+		if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt2, nullptr) != SQLITE_OK) {
+			throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
+		}
+
+		SqliteStatementGuard guard{ stmt2 };
+
+		auto lastAccrual = std::chrono::system_clock::to_time_t(saving.GetLastAccrualDate());
+		sqlite3_bind_int64(stmt2, 1, static_cast<long long>(lastAccrual));
+		sqlite3_bind_int(stmt2, 2, account.GetId());
+		if (sqlite3_step(stmt2) != SQLITE_DONE) {
+			throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
+		}
+	}
+
 }
 
 
@@ -156,7 +176,7 @@ bool SqliteAccountRepository::Exists(int id) const {
 	}
 	SqliteStatementGuard guard{ stmt };
 
-	 sqlite3_bind_int(stmt,1,id);
+	sqlite3_bind_int(stmt, 1, id);
 
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
 		return sqlite3_column_int(stmt, 0) > 0;
@@ -181,7 +201,7 @@ std::pair<double, std::chrono::system_clock::time_point> SqliteAccountRepository
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
 		interestRate = sqlite3_column_double(stmt, 0);
 		long long lastAccrualTs = sqlite3_column_int64(stmt, 1);
-		 lastAccrualDate = std::chrono::system_clock::from_time_t(static_cast<time_t>(lastAccrualTs));
+		lastAccrualDate = std::chrono::system_clock::from_time_t(static_cast<time_t>(lastAccrualTs));
 	}
 
 	return { interestRate,lastAccrualDate };
@@ -201,7 +221,7 @@ std::pair<int, double> SqliteAccountRepository::FindDepositExtra(int id) {
 	double interestRate = 0.0;
 
 	if (sqlite3_step(stmt) == SQLITE_ROW) {
-		months = sqlite3_column_int(stmt,0);
+		months = sqlite3_column_int(stmt, 0);
 		interestRate = sqlite3_column_double(stmt, 1);
 	}
 
