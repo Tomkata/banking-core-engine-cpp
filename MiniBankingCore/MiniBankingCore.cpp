@@ -68,6 +68,14 @@ balance_cents INTEGER NOT NULL
     FOREIGN KEY(account_id) REFERENCES accounts(id)
 );)");
 
+    db.Execute(R"(
+    CREATE TABLE IF NOT EXISTS saving_accounts (
+    account_id INTEGER PRIMARY KEY,
+    interest_rate REAL NOT NULL,
+    lastAccrualDate INTEGER NOT NULL,
+    FOREIGN KEY(account_id) REFERENCES accounts(id)
+);)");
+
     //db.Execute("DELETE FROM accounts;");
     //db.Execute("DELETE FROM transactions;");
     //db.Execute("DELETE FROM transaction_entries;");

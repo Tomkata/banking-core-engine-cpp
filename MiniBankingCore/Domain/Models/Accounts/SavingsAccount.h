@@ -2,16 +2,30 @@
 #include <iostream>
 #include "../Accounts/Account.h"
 #include "../../enums/WithdrawResult.h"
+#include <chrono>
+#include <iostream>
 
 class SavingsAccount :public Account {
-
+private:
+	double interestRate;
+	std::chrono::system_clock::time_point lastAccrualDate;
 	
 public:
 	SavingsAccount()
-	:Account(AccountType::Saving){}
+		: Account(AccountType::Saving),
+		interestRate(0.0),
+		lastAccrualDate(std::chrono::system_clock::now()) {
+	}
 
-	SavingsAccount(int id, AccountStatus status, Money balance)
-		:Account(AccountType::Saving,id,status,balance){ }
+	SavingsAccount(int id,
+		AccountStatus status,
+		Money balance,
+		double interestRate,
+		std::chrono::system_clock::time_point lastAccrualDate)
+		:Account(AccountType::Saving, id, status, balance),
+		interestRate(interestRate),
+		lastAccrualDate(lastAccrualDate) {
+	}
 
 	DepositResult CanDeposit(const Money& amount) const override {
 		return Account::BaseCanDeposit(amount);
@@ -21,5 +35,17 @@ public:
 		return WithdrawResult::NotSupported;
 	}
 
+public:
+	double GetInteresrtRate() const {
+		return interestRate;
+	}
+
+	std::chrono::system_clock::time_point GetLastAccrualDate() const {
+		return lastAccrualDate;
+	}
+
+	void UpdateLastAccrualDate() {
+		lastAccrualDate = std::chrono::system_clock::now();
+	}
 
 };

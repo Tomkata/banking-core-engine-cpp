@@ -4,7 +4,7 @@
 #include "../../Domain/ValueObjects/Money.h"
 
 #include <iostream>
-
+#include <chrono>
 
 class AccountFactory {
 
@@ -15,6 +15,6 @@ public:
 		AccountStatus status,
 		Money balance,
 		int months,
-		double rate
-	);
+		double rate,
+		std::chrono::system_clock::time_point lastAccrualDate);
 };

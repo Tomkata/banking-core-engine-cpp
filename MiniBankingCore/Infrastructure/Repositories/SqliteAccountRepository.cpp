@@ -52,21 +52,37 @@ void SqliteAccountRepository::Add(const Account& account) {
 		if (sqlite3_step(stmt2) != SQLITE_DONE) {
 			throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
 		}
-		
 	}
-		
+	else if (account.GetType() == AccountType::Saving) {
+		auto& saving = static_cast<const SavingsAccount&>(account);
+
+		sqlite3_stmt* stmt2;
+
+		std::string sql2 = "INSERT INTO saving_accounts (account_id,interest_rate,lastAccrualDate) VALUES (?, ?, ?)";
+
+		if (sqlite3_prepare_v2(db.GetConnection(), sql2.c_str(), -1, &stmt2, nullptr)) {
+			throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
+		}
+
+		SqliteStatementGuard guard2{ stmt2 };
+
+		sqlite3_bind_int(stmt2, 1, saving.GetId());
+		sqlite3_bind_double(stmt2, 2, saving.GetInteresrtRate());
+		auto lastAccrual = std::chrono::system_clock::to_time_t(saving.GetLastAccrualDate());
+		sqlite3_bind_int64(stmt2, 3, static_cast<long long>(lastAccrual));
+
+		if (sqlite3_step(stmt2) != SQLITE_DONE) {
+			throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
+		}
+	}
 };
 
 std::unique_ptr<Account> SqliteAccountRepository::FindById(int id) {
 	sqlite3_stmt* stmt;
 
-	std::string sql = R"(
-    SELECT a.id, a.type, a.status, a.balance_cents,
-           d.months, d.interest_rate
-    FROM accounts a
-    LEFT JOIN deposit_accounts d ON a.id = d.account_id
-    WHERE a.id = ?
-)";
+	std::string sql = R"(SELECT id, type, status, balance_cents FROM accounts WHERE id = ?)";
+
+
 
 	if (sqlite3_prepare_v2(db.GetConnection(),sql.c_str(), -1,&stmt , nullptr) != SQLITE_OK) {
 		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
@@ -78,22 +94,27 @@ std::unique_ptr<Account> SqliteAccountRepository::FindById(int id) {
 	std::unique_ptr<Account> account;
 
 
-	if (sqlite3_step(stmt) == SQLITE_ROW){
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
 		int id = sqlite3_column_int(stmt, 0);
 		int type = sqlite3_column_int(stmt, 1);
 		int status = sqlite3_column_int(stmt, 2);
 		long long balance = sqlite3_column_int64(stmt, 3);
-		int months = sqlite3_column_int(stmt, 4);     
-		double rate = sqlite3_column_double(stmt, 5);   
 
-		account = AccountFactory::Create(
-		static_cast<AccountType>(type),
-		id,
-		static_cast<AccountStatus>(status),
-		Money(balance),
-			months,
-			rate
-		);
+		if (static_cast<AccountType>(type) == AccountType::Checking) {
+			return std::make_unique<CheckingAccount>(id, static_cast<AccountStatus>(status), Money(balance));
+		}
+		else if (static_cast<AccountType>(type) == AccountType::Saving) {
+			auto [rate, lastAccrual] = FindSavingExtra(id);
+			return std::make_unique<SavingsAccount>(id, static_cast<AccountStatus>(status), Money(balance), rate, lastAccrual);
+		}
+		else if (static_cast<AccountType>(type) == AccountType::Deposit) {
+			auto [months, rate] = FindDepositExtra(id);
+			return std::make_unique<DepositAccount>(id, static_cast<AccountStatus>(status), Money(balance), months, rate);
+		}
+		else {
+			throw std::runtime_error("Unknown account type: " + std::to_string(type));
+		}
+
 	}
 
 
@@ -142,4 +163,48 @@ bool SqliteAccountRepository::Exists(int id) const {
 		return sqlite3_column_int(stmt, 0) > 0;
 	}
 	return false;
+}
+
+
+std::pair<double, std::chrono::system_clock::time_point> SqliteAccountRepository::FindSavingExtra(int id) {
+	sqlite3_stmt* stmt;
+	std::string sql = R"(SELECT interest_rate, lastAccrualDate FROM saving_accounts WHERE id = ?)";
+
+	if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
+	}
+	SqliteStatementGuard guard{ stmt };
+	sqlite3_bind_int(stmt, 1, id);
+
+	double interestRate = 0.0;
+	std::chrono::system_clock::time_point lastAccrualDate;
+
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		interestRate = sqlite3_column_double(stmt, 0);
+		long long lastAccrualTs = sqlite3_column_int64(stmt, 1);
+		 lastAccrualDate = std::chrono::system_clock::from_time_t(static_cast<time_t>(lastAccrualTs));
+	}
+
+	return { interestRate,lastAccrualDate };
+}
+
+std::pair<int, double> SqliteAccountRepository::FindDepositExtra(int id) {
+	sqlite3_stmt* stmt;
+	std::string sql = R"(SELECT months, interest_rate FROM deposit_accounts WHERE id = ?)";
+
+	if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
+		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
+	}
+	SqliteStatementGuard guard{ stmt };
+	sqlite3_bind_int(stmt, 1, id);
+
+	int months = 0;
+	double interestRate = 0.0;
+
+	if (sqlite3_step(stmt) == SQLITE_ROW) {
+		months = sqlite3_column_int(stmt,0);
+		interestRate = sqlite3_column_double(stmt, 1);
+	}
+
+	return { months,interestRate };
 }

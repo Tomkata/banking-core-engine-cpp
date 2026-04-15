@@ -3,6 +3,7 @@
 #include "../../MiniBankingCore/Domain/Interfaces/IAccountRepository.h"
 #include "../../MiniBankingCore/Infrastructure/Factories/AccountFactory.h"
 #include <unordered_map>
+#include <chrono>
 
 class FakeAccountRepository : public IAccountRepository {
 private:
@@ -32,7 +33,8 @@ public:
         if (it == accounts.end()) return nullptr;
 
         auto& d = it->second;
-        return AccountFactory::Create(d.type,d.id,d.status,d.balance,d.months,d.rate);
+        return AccountFactory::Create(d.type, d.id, d.status, d.balance, d.months, d.rate,
+            std::chrono::system_clock::now());
     }
 
     void Add(const Account& account) override {}

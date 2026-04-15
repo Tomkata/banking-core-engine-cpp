@@ -1,6 +1,5 @@
-﻿  TransferOperation.cpp
-  TransactionProcessor.cpp
-  AccountFactory.cpp
+﻿  AccountFactory.cpp
   SqliteAccountRepository.cpp
   Generating Code...
+  sqlite3.c
   MiniBankingCore.Lib.vcxproj -> C:\Users\HP\source\repos\MiniBankingCore\x64\Debug\MiniBankingCore.Lib.lib
