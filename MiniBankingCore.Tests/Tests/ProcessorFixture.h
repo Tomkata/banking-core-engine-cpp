@@ -7,6 +7,7 @@
 #include "../../MiniBankingCore/Domain/Models/services/TransferFeeCalculator.h"
 #include "../../MiniBankingCore/Domain/Models/services/TransferOperation.h"
 #include "../../MiniBankingCore/Domain/services/TransactionProcessor.h"
+#include "../../MiniBankingCore/Domain/Models/services/InterestAccrualService.h"
 
 struct ProcessorFixture {
     FakeAccountRepository accountRepo;
@@ -16,8 +17,11 @@ struct ProcessorFixture {
     TransferFeeCalculator calc;
     TransferOperation transferOperation;
     TransactionProcessor processor;
+    InterestAccrualService interestAccrual;
 
     ProcessorFixture()
-        : processor(accountRepo, transactionRepo, mapper, uow, calc, transferOperation) {
+        : processor(accountRepo, transactionRepo, mapper, uow, calc, transferOperation),
+        interestAccrual(accountRepo, processor) {
     }
+            
 };

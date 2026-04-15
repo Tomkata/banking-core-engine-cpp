@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClCompile Include="Tests\catch_amalgamated.cpp" />
     <ClCompile Include="Tests\EntryMapperTests.cpp" />
+    <ClCompile Include="Tests\InterestAccrualTests.cpp" />
+    <ClCompile Include="Tests\TestMain.cpp" />
     <ClCompile Include="Tests\TransactionTests.cpp" />
   </ItemGroup>
   <ItemGroup>

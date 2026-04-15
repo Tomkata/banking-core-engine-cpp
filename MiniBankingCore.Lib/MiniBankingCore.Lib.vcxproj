@@ -151,6 +151,7 @@
     <ClCompile Include="..\MiniBankingCore\Domain\Models\Accounts\CheckingAccount.cpp" />
     <ClCompile Include="..\MiniBankingCore\Domain\Models\Accounts\DepositAccount.cpp" />
     <ClCompile Include="..\MiniBankingCore\Domain\Models\Accounts\SavingsAccount.cpp" />
+    <ClCompile Include="..\MiniBankingCore\Domain\Models\services\InterestAccrualService.cpp" />
     <ClCompile Include="..\MiniBankingCore\Domain\Models\services\TransferFeeCalculator.cpp" />
     <ClCompile Include="..\MiniBankingCore\Domain\Models\services\TransferOperation.cpp" />
     <ClCompile Include="..\MiniBankingCore\Domain\Models\Transaction.cpp" />

@@ -14,10 +14,10 @@ void InterestAccrualService::AccrueAll(){
 		auto days = std::chrono::duration_cast<std::chrono::days>(diff).count();
 
 		if (days >= 30) {
-			auto interestAmount = account->GetInterestRate() * (account->GetBalance().GetCents() / 100);
-			processor.Deposit(account->GetId(),Money(interestAmount));
+
+			auto interestAmount = account->GetInterestRate() * (account->GetBalance().GetCents());
+			processor.Deposit(account->GetId(), Money(static_cast<long long>(interestAmount)));
 			account->UpdateLastAccrualDate();
-			accRepo.Update(*account);
 		}
 	}
 }

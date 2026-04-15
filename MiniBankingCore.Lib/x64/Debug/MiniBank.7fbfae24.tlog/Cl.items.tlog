@@ -6,6 +6,7 @@ C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore\Domain\Models\Accounts\
 C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore\Domain\Models\Accounts\CheckingAccount.cpp;C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore.Lib\x64\Debug\CheckingAccount.obj
 C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore\Domain\Models\Accounts\DepositAccount.cpp;C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore.Lib\x64\Debug\DepositAccount.obj
 C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore\Domain\Models\Accounts\SavingsAccount.cpp;C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore.Lib\x64\Debug\SavingsAccount.obj
+C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore\Domain\Models\services\InterestAccrualService.cpp;C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore.Lib\x64\Debug\InterestAccrualService.obj
 C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore\Domain\Models\services\TransferFeeCalculator.cpp;C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore.Lib\x64\Debug\TransferFeeCalculator.obj
 C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore\Domain\Models\services\TransferOperation.cpp;C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore.Lib\x64\Debug\TransferOperation.obj
 C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore\Domain\Models\Transaction.cpp;C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore.Lib\x64\Debug\Transaction.obj
