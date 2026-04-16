@@ -115,7 +115,6 @@ balance_cents INTEGER NOT NULL
     catch (const std::exception& ex)
     {
         std::cout << ex.what() << std::endl;
-
     }
 
     return 0;
