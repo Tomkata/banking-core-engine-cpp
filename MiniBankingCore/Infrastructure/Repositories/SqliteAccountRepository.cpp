@@ -187,7 +187,7 @@ bool SqliteAccountRepository::Exists(int id) const {
 
 std::pair<double, std::chrono::system_clock::time_point> SqliteAccountRepository::FindSavingExtra(int id) {
 	sqlite3_stmt* stmt;
-	std::string sql = R"(SELECT interest_rate, lastAccrualDate FROM saving_accounts WHERE id = ?)";
+	std::string sql = R"(SELECT interest_rate, lastAccrualDate FROM saving_accounts WHERE account_id  = ?)";
 
 	if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
 		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
@@ -209,7 +209,7 @@ std::pair<double, std::chrono::system_clock::time_point> SqliteAccountRepository
 
 std::pair<int, double> SqliteAccountRepository::FindDepositExtra(int id) {
 	sqlite3_stmt* stmt;
-	std::string sql = R"(SELECT months, interest_rate FROM deposit_accounts WHERE id = ?)";
+	std::string sql = R"(SELECT months, interest_rate FROM deposit_accounts WHERE account_id Ч = ?)";
 
 	if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt, nullptr) != SQLITE_OK) {
 		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));

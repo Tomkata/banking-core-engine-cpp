@@ -158,10 +158,11 @@
     <ClInclude Include="Domain\enums\TransactionEntryType.h" />
     <ClInclude Include="Domain\enums\TransactionStatus.h" />
     <ClInclude Include="Domain\enums\TransactionType.h" />
+    <ClInclude Include="Domain\enums\TransferResult.h" />
     <ClInclude Include="Domain\enums\WithdrawCapability.h" />
     <ClInclude Include="Domain\enums\WithdrawResult.h" />
-    <ClInclude Include="Domain\Exceptions\Account\InsufficientbalanceException.h" />
     <ClInclude Include="Domain\Exceptions\Account\InvalidDepositException.h" />
+    <ClInclude Include="Domain\Exceptions\Account\InvalidTransferException.h" />
     <ClInclude Include="Domain\Exceptions\Account\InvalidWithdrawException.h" />
     <ClInclude Include="Domain\Interfaces\IAccountRepository.h" />
     <ClInclude Include="Domain\Interfaces\ITransactionRepository.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Domain\Models\services\TransferOperation.h" />
     <ClInclude Include="Domain\Models\Transaction.h" />
     <ClInclude Include="Domain\Models\TransactionEntry.h" />
+    <ClInclude Include="Domain\Results\Result.h" />
     <ClInclude Include="Domain\services\TransactionProcessor.h" />
     <ClInclude Include="Domain\ValueObjects\Money.h" />
     <ClInclude Include="EffectReason.h" />

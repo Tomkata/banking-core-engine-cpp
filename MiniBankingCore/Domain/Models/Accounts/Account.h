@@ -7,6 +7,7 @@
 #include "../../enums/WithdrawCapability.h"
 #include "../Effects//Effect.h"
 #include "../../ValueObjects/Money.h"
+#include "../../Results/Result.h"
 
 #include <string>
 #include <iostream>
@@ -27,8 +28,8 @@ public:
     Account(AccountType type,int id, AccountStatus status, Money balance);
     virtual ~Account() = default;
 
-   virtual std::vector<Effect> Deposit(const Money& amount);
-   virtual std::vector<Effect> Withdraw(const Money& amount);
+   virtual Result<std::vector<Effect>, DepositResult> Deposit(const Money& amount);
+   virtual Result<std::vector<Effect>, WithdrawResult> Withdraw(const Money& amount);
     void Freeze();
     void Close();
     void Block();

@@ -3,7 +3,7 @@
 #include "../../Exceptions/Account/InvalidWithdrawException.h"
 #include "../../Exceptions/Account/InvalidDepositException.h"
 
- std::vector<Effect> TransferOperation::CreateEffects(
+Result<std::vector<Effect>, TransferResult> TransferOperation::CreateEffects(
 	Account& accountA,
 	Account& accountB,
 	Money amount,
@@ -12,28 +12,28 @@
 	auto accountAResult = accountA.CanWithdraw(amount);
 	auto accountBResult = accountB.CanDeposit(amount);
 	if (accountA.GetId() == accountB.GetId()) {
-		throw std::logic_error("Cannot transfer to the same account");
+		return Result<std::vector<Effect>, TransferResult>::Err(TransferResult::SameAccount);
 	}
-
+		
 	if (accountAResult != WithdrawResult::Ok) {
-		throw InvalidWithdrawException(accountAResult);
+		return Result<std::vector<Effect>, TransferResult>::Err(FromWithdrawResult(accountAResult));
 	}
 	if (accountBResult != DepositResult::Ok) {
-		throw InvalidDepositException(accountBResult);
+		return Result<std::vector<Effect>, TransferResult>::Err(FromDepositResult(accountBResult));
 	}
 
 	if (fee == Money(0)) {
-		return {
+		return Result< std::vector<Effect>, TransferResult>::Ok({
 		Effect(EffectTarget{TargetType::CustomerAccount,accountA.GetId()},-amount,EffectReason::Transfer),
 		Effect(EffectTarget{TargetType::CustomerAccount,accountB.GetId()},amount,EffectReason::Transfer),
-		};
+		});
 	}
 
-	return {
+	return Result< std::vector<Effect>, TransferResult>::Ok({
 		Effect(EffectTarget{TargetType::CustomerAccount,accountA.GetId()},-amount,EffectReason::Transfer),
 		Effect(EffectTarget{TargetType::CustomerAccount,accountA.GetId()},-fee,EffectReason::TransferFee),
 		Effect(EffectTarget{TargetType::BankRevenue, BankContracts::BankRevenueId},fee,EffectReason::TransferFee),
 		Effect(EffectTarget{TargetType::CustomerAccount,accountB.GetId()},amount,EffectReason::Transfer),
-	};
+	});
 	
 };

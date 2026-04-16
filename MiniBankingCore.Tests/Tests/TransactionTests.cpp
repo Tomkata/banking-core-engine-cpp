@@ -11,6 +11,7 @@
 #include "../../MiniBankingCore/Domain/services/TransactionProcessor.h"
 #include "../../MiniBankingCore/Domain/Exceptions/Account/InvalidWithdrawException.h"
 #include "../../MiniBankingCore/Domain/Exceptions/Account/InvalidDepositException.h"
+#include "../../MiniBankingCore/Domain/Exceptions/Account/InvalidTransferException.h"
 
 
 
@@ -102,7 +103,7 @@ TEST_CASE("TransactionProccessor: Transfer from frozen account shoud throw excep
     pf.accountRepo.Seed(AccountType::Checking, 2, AccountStatus::Active, Money(200));
 
 
-    REQUIRE_THROWS_AS(pf.processor.Transfer(1, 2, Money(100)), InvalidWithdrawException);
+    REQUIRE_THROWS_AS(pf.processor.Transfer(1, 2, Money(100)), InvalidTransferException);
 
 }
 
@@ -112,7 +113,7 @@ TEST_CASE("TransactionProccessor: Transfer with insufficient balance shoud throw
     pf.accountRepo.Seed(AccountType::Checking, 2, AccountStatus::Active, Money(0));
 
 
-    REQUIRE_THROWS_AS(pf.processor.Transfer(1, 2, Money(1000)), InvalidWithdrawException);
+    REQUIRE_THROWS_AS(pf.processor.Transfer(1, 2, Money(1000)), InvalidTransferException);
 
 }
 
@@ -198,8 +199,8 @@ TEST_CASE("Withdraw generates correct effects") {
 
     auto effects = acc->Withdraw(Money(100));
 
-    REQUIRE(effects.size() == 2);
-    REQUIRE(effects[0].delta == Money(-100));
+    REQUIRE(effects.Value().size() == 2);
+    REQUIRE(effects.Value()[0].delta == Money(-100));
 }
 
 TEST_CASE("Deposit generates correct effects") {
@@ -210,6 +211,6 @@ TEST_CASE("Deposit generates correct effects") {
 
     auto effects = acc->Deposit(Money(100));
 
-    REQUIRE(effects.size() == 2);
-    REQUIRE(effects[0].delta == Money(100));
+    REQUIRE(effects.Value().size() == 2);
+    REQUIRE(effects.Value()[0].delta == Money(100));
 }

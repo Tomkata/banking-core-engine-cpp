@@ -53,6 +53,9 @@
     <Filter Include="Source Files\Infrastructure\Factories">
       <UniqueIdentifier>{948ba543-394c-482e-bfde-417d920cf8c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Domain\Results">
+      <UniqueIdentifier>{6450453e-5a02-4429-82a5-5affc747f545}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniBankingCore.cpp">
@@ -121,9 +124,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Domain\Exceptions\Account\InvalidDepositException.h">
-      <Filter>Source Files\Domain\Exceptions\Account</Filter>
-    </ClInclude>
-    <ClInclude Include="Domain\Exceptions\Account\InsufficientbalanceException.h">
       <Filter>Source Files\Domain\Exceptions\Account</Filter>
     </ClInclude>
     <ClInclude Include="Domain\Exceptions\Account\InvalidWithdrawException.h">
@@ -236,6 +236,15 @@
     </ClInclude>
     <ClInclude Include="Domain\Models\services\InterestAccrualService.h">
       <Filter>Source Files\Domain\Models\services</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Results\Result.h">
+      <Filter>Source Files\Domain\Results</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\enums\TransferResult.h">
+      <Filter>Source Files\Domain\enums</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Exceptions\Account\InvalidTransferException.h">
+      <Filter>Source Files\Domain\Exceptions\Account</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

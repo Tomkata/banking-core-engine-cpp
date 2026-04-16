@@ -7,6 +7,7 @@
 
 #include "../Exceptions/Account/InvalidWithdrawException.h"
 #include "../Exceptions/Account/InvalidDepositException.h"
+#include "../Exceptions/Account/InvalidTransferException.h"
 
 
 
@@ -23,7 +24,7 @@ void TransactionProcessor::Deposit(int toAccountId, Money amount) {
 
 	Transaction tr(TransactionType::Deposit, amount, -1, toAccountId);
 
-	auto effects  = ExecuteTransaction(tr, [&]() {
+	auto result  = ExecuteTransaction(tr, [&]() {
 
 		auto toAccount = accountRepo.FindById(toAccountId);
 
@@ -31,15 +32,15 @@ void TransactionProcessor::Deposit(int toAccountId, Money amount) {
 			throw std::logic_error("Account not found: id=" + std::to_string(toAccountId));
 		}
 
-		DepositResult result = toAccount->CanDeposit(amount);
-		if (result != DepositResult::Ok) {
-			throw InvalidDepositException(result);
+
+		auto results = toAccount->Deposit(amount);
+	
+		if (!results.IsOk()) {
+			throw InvalidDepositException(results.Error());
 		}
 
-		auto effects = toAccount->Deposit(amount);
-		//O(N * 2) = O(N)
-		StoreEntries(effects, tr);
-		return effects;
+		StoreEntries(results.Value(), tr);
+		return results.Value();
 		});
 
 }
@@ -64,8 +65,12 @@ void TransactionProcessor::Transfer(int fromAccountId, int toAccountId, Money am
 
 		auto effects = transferOperation.CreateEffects(*fromAccount,*toAccount,amount,fee);
 
-		StoreEntries(effects, tr);
-		return effects;
+		if (!effects.IsOk()) {
+			throw InvalidTransferException(effects.Error());
+		}
+
+		StoreEntries(effects.Value(), tr);
+		return effects.Value();
 			
 		});
 }
@@ -83,19 +88,15 @@ void TransactionProcessor::Withdraw(int fromAccountId, Money amount) {
 			throw std::logic_error("Account not found: id=" + std::to_string(fromAccountId));
 		}
 
-		auto result = fromAccount->CanWithdraw(amount);
+		auto results = fromAccount->Withdraw(amount);
 
-
-		if (result != WithdrawResult::Ok) {
-			throw InvalidWithdrawException(result);
+		if (!results.IsOk()) {
+			throw InvalidWithdrawException(results.Error());
 		}
 
-		std::vector<Effect> effects = fromAccount->Withdraw(amount);
-
 		
-		StoreEntries(effects,tr);
-		return effects;
-
+		StoreEntries(results.Value(), tr);
+		return results.Value();
 		});
 
 }

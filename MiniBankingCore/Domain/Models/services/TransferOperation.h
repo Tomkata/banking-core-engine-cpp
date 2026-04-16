@@ -9,11 +9,13 @@
 #include "../../ValueObjects/Money.h"
 #include "../services/TransferFeeCalculator.h"
 #include "../../../Domain/BankConstants.h"
+#include "../../Results/Result.h"
+#include "../../enums/TransferResult.h"
 
  class TransferOperation {
 
  public:
-	std::vector<Effect> CreateEffects(
+	 Result<std::vector<Effect>, TransferResult> CreateEffects(
 		Account& accountA,
 		Account& accountB,
 		Money amount,

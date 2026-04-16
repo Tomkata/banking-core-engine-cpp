@@ -23,7 +23,7 @@ TEST_CASE("EntryMapper: Withdraw from CustomerAccount returns Liability Debit en
 
 	auto effects = acc->Withdraw(Money(100));
 	
-	auto entries = pf.mapper.Map(effects[0]);
+	auto entries = pf.mapper.Map(effects.Value()[0]);
 
 	REQUIRE(entries.size() == 1);
 	REQUIRE(entries[0].GetLedgerType() == LedgerAccountType::Liability);
@@ -39,7 +39,7 @@ TEST_CASE("EntryMapper: Deposit from CustomerAccount returns Liability Credit en
 
 	auto effects = acc->Deposit(Money(100));
 
-	auto entries = pf.mapper.Map(effects[0]);
+	auto entries = pf.mapper.Map(effects.Value()[0]);
 
 	REQUIRE(entries.size() == 1);
 	REQUIRE(entries[0].GetLedgerType() == LedgerAccountType::Liability);
@@ -54,7 +54,7 @@ TEST_CASE("EntryMapper: Withdraw from Vault returns Asset Credit entry") {
 
 	auto effects = acc->Withdraw(Money(100));
 
-	auto entries = pf.mapper.Map(effects[1]);
+	auto entries = pf.mapper.Map(effects.Value()[1]);
 
 	REQUIRE(entries.size() == 1);
 	REQUIRE(entries[0].GetLedgerType() == LedgerAccountType::Asset);
@@ -69,7 +69,7 @@ TEST_CASE("EntryMapper: Deposit to Vault returns Asset Debit entry") {
 
 	auto effects = acc->Deposit(Money(100));
 
-	auto entries = pf.mapper.Map(effects[1]);
+	auto entries = pf.mapper.Map(effects.Value()[1]);
 
 	REQUIRE(entries.size() == 1);
 	REQUIRE(entries[0].GetLedgerType() == LedgerAccountType::Asset);
@@ -89,7 +89,7 @@ TEST_CASE("EntryMapper: Transfer from source account returns Liability Debit ent
 
 	auto effects = pf.transferOperation.CreateEffects(*acc1,*acc2,Money(10), fee);
 
-	auto entries = pf.mapper.Map(effects[0]);
+	auto entries = pf.mapper.Map(effects.Value()[0]);
 
 	REQUIRE(entries.size() == 1);
 	REQUIRE(entries[0].GetLedgerType() == LedgerAccountType::Liability);
@@ -108,7 +108,7 @@ TEST_CASE("EntryMapper: Transfer with fee effect shoud return Revenue Credit Ent
 
 	auto effects = pf.transferOperation.CreateEffects(*acc1, *acc2, Money(10), fee);
 
-	auto entries = pf.mapper.Map(effects[2]);
+	auto entries = pf.mapper.Map(effects.Value()[2]);
 
 	REQUIRE(entries.size() == 1);
 	REQUIRE(entries[0].GetLedgerType() == LedgerAccountType::Revenue);

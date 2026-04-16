@@ -46,8 +46,13 @@
 			 return Account::BaseCanWithdraw(total);
 		 }
 
-		 std::vector<Effect> Withdraw(const Money& amount) override {
+		 Result<std::vector<Effect>, WithdrawResult> 
+			 Withdraw(const Money& amount) override {
 
+			 auto validateResult = CanWithdraw(amount);
+			 if (validateResult != WithdrawResult::Ok) {
+				 return Result<std::vector<Effect>, WithdrawResult>::Err(validateResult);
+			 }
 
 			 auto now = std::chrono::system_clock::now();
 
@@ -56,19 +61,19 @@
 			 if (now < matuiryDateEnd) {
 				 auto penalty = GetPenalty(amount);
 				 if (penalty != Money(0)) {
-					 return {
+					 return Result<std::vector<Effect>,WithdrawResult>::Ok({
 								Effect(EffectTarget{TargetType::CustomerAccount, GetId()}, -amount,  EffectReason::Withdraw),
 								Effect(EffectTarget{TargetType::Vault, BankContracts::VaultId},                -amount,  EffectReason::Withdraw),
 								Effect(EffectTarget{TargetType::CustomerAccount, GetId()}, -penalty, EffectReason::EarlyWithdrawalPenalty),
 								Effect(EffectTarget{TargetType::BankRevenue, BankContracts::BankRevenueId},  penalty, EffectReason::EarlyWithdrawalPenalty)
-					 };
+					 });
 				 }
 			 }
 
-			 return {
+			 return Result<std::vector<Effect>, WithdrawResult>::Ok({
 			Effect(EffectTarget{TargetType::CustomerAccount, GetId()}, -amount, EffectReason::Withdraw),
 			Effect(EffectTarget{TargetType::Vault, BankContracts::VaultId}, -amount, EffectReason::Withdraw)
-			 };
+			 });
 
 		 }
 
@@ -89,7 +94,6 @@
 		const int GetMonths() const {
 			return months;
 		}
-
 
 	};
 

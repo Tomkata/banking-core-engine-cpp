@@ -23,37 +23,37 @@ Account::Account(AccountType type, int id, AccountStatus status, Money balance)
 }
 
 
-std::vector<Effect> Account::Deposit(const Money& amount) {
+Result<std::vector<Effect>, DepositResult> Account::Deposit(const Money& amount) {
 	DepositResult result = BaseCanDeposit(amount);
 	if (result != DepositResult::Ok) {
-		throw InvalidDepositException(result);
+		return Result<std::vector<Effect>, DepositResult>::Err(result);
 	}
 
-	return {
+	return Result<std::vector<Effect>, DepositResult>::Ok({
 		Effect(EffectTarget{TargetType::CustomerAccount, id},
 			amount,
 			EffectReason::Deposit),
 		Effect(EffectTarget{TargetType::Vault, vaultId},
 			amount,
 			EffectReason::Deposit)
-	};
+	});
 }
 
-std::vector<Effect> Account::Withdraw(const Money& amount) {
+Result<std::vector<Effect>, WithdrawResult> Account::Withdraw(const Money& amount) {
 	auto result = CanWithdraw(amount);
 	if (result != WithdrawResult::Ok) {
-		throw InvalidWithdrawException(result);
+		return Result<std::vector<Effect>,WithdrawResult>::Err(result);
 	}
 
 
-	return {
+	return  Result<std::vector<Effect>, WithdrawResult>::Ok({
 		Effect(EffectTarget{TargetType::CustomerAccount, id},
 			-amount,
 			EffectReason::Withdraw),
 		Effect(EffectTarget{TargetType::Vault, vaultId},
 			-amount,
 			EffectReason::Withdraw)
-	};
+	});
 }
 
 
