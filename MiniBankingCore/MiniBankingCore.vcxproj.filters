@@ -56,6 +56,12 @@
     <Filter Include="Source Files\Domain\Results">
       <UniqueIdentifier>{6450453e-5a02-4429-82a5-5affc747f545}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Domain\Queries">
+      <UniqueIdentifier>{6b918e56-bfbf-421e-baef-a665cd3f43b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Infrastructure\Queries">
+      <UniqueIdentifier>{77ba8b3a-a3d8-417b-b25c-1bd21ba23663}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniBankingCore.cpp">
@@ -120,6 +126,9 @@
     </ClCompile>
     <ClCompile Include="Domain\Models\services\InterestAccrualService.cpp">
       <Filter>Source Files\Domain\Models\services</Filter>
+    </ClCompile>
+    <ClCompile Include="Infrastructure\Queries\AccountQueryService.cpp">
+      <Filter>Source Files\Infrastructure\Queries</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +254,18 @@
     </ClInclude>
     <ClInclude Include="Domain\Exceptions\Account\InvalidTransferException.h">
       <Filter>Source Files\Domain\Exceptions\Account</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Queries\IAccountQueryService.h">
+      <Filter>Source Files\Domain\Queries</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Queries\StatementLine.h">
+      <Filter>Source Files\Domain\Queries</Filter>
+    </ClInclude>
+    <ClInclude Include="Domain\Queries\AccountStatement.h">
+      <Filter>Source Files\Domain\Queries</Filter>
+    </ClInclude>
+    <ClInclude Include="Infrastructure\Queries\AccountQueryService.h">
+      <Filter>Source Files\Infrastructure\Queries</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

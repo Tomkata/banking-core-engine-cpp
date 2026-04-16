@@ -92,25 +92,14 @@ balance_cents INTEGER NOT NULL
     TransactionProcessor processor(repo, transactionRepo, mapper, uow, tranferFeeCalc, trOperation);
     InterestAccrualService accrualService(repo,processor);
 
-    accrualService.AccrueAll();
+    //accrualService.AccrueAll();
 
     try
     {
-        processor.Deposit(1, Money(50000)); // 500 лв
+        std::cout << "Before deposit" << std::endl;
+        processor.Deposit(1, Money(50000));
+        std::cout << "After deposit" << std::endl;
 
-        auto before1 = repo.FindById(1)->GetBalance().GetCents();
-        auto before2 = repo.FindById(2)->GetBalance().GetCents();
-
-        processor.Transfer(1, 2, Money(10000)); // 100 лв
-
-        auto after1 = repo.FindById(1)->GetBalance().GetCents();
-        auto after2 = repo.FindById(2)->GetBalance().GetCents();
-
-        std::cout << "acc1: " << before1 << " -> " << after1 << std::endl;
-        std::cout << "acc2: " << before2 << " -> " << after2 << std::endl;
-        long long expectedFee = tranferFeeCalc.CalculateFee(0.01, Money(10000)).GetCents();
-        std::cout << "expectedFee: " << expectedFee << std::endl;
-        std::cout << (before1 - after1 == 10000 + expectedFee && after2 - before2 == 10000 ? "PASS" : "FAIL") << std::endl;
     }
     catch (const std::exception& ex)
     {

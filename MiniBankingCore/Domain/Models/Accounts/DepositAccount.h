@@ -53,7 +53,6 @@
 			 if (validateResult != WithdrawResult::Ok) {
 				 return Result<std::vector<Effect>, WithdrawResult>::Err(validateResult);
 			 }
-
 			 auto now = std::chrono::system_clock::now();
 
 			 auto total = amount;

@@ -28,11 +28,13 @@ void SqliteTransactionRepository::Add( Transaction&& tr) {
 	for (const auto& entry : tr.GetEntries()) {
 		sqlite3_stmt* stmt2;
 		std::string sql2 = "INSERT INTO transaction_entries (transaction_id, entry_type, ledger_type, amount_cents, description) VALUES (?,?,?,?,?)";
+		
+		sqlite3_int64 realId = sqlite3_last_insert_rowid(db.GetConnection());
 
 		sqlite3_prepare_v2(db.GetConnection(), sql2.c_str(), -1, &stmt2, nullptr);
 		SqliteStatementGuard guard2{ stmt2 };
 
-		sqlite3_bind_int(stmt2, 1, tr.GetId());
+		sqlite3_bind_int(stmt2, 1, realId);
 		sqlite3_bind_int(stmt2, 2, static_cast<int>(entry.GetType()));
 		sqlite3_bind_int(stmt2, 3, static_cast<int>(entry.GetLedgerType()));
 		sqlite3_bind_int64(stmt2, 4, entry.GetAmount().GetCents());

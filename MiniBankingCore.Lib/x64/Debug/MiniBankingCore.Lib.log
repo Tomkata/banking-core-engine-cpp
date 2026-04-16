@@ -1,4 +1,7 @@
-﻿  AccountFactory.cpp
+﻿  TransactionProcessor.cpp
+  AccountFactory.cpp
   SqliteAccountRepository.cpp
+  SqliteTransactionRepository.cpp
+C:\Users\HP\source\repos\MiniBankingCore\MiniBankingCore\Infrastructure\Repositories\SqliteTransactionRepository.cpp(37,30): warning C4244: 'argument': conversion from 'sqlite3_int64' to 'int', possible loss of data
   Generating Code...
   MiniBankingCore.Lib.vcxproj -> C:\Users\HP\source\repos\MiniBankingCore\x64\Debug\MiniBankingCore.Lib.lib

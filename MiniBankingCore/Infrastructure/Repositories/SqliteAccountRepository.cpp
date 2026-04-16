@@ -140,6 +140,7 @@ void  SqliteAccountRepository::Update(const Account& account) {
 
 
 	if (sqlite3_step(stmt) != SQLITE_DONE) {
+		std::cout << sqlite3_errmsg(db.GetConnection()) << std::endl;
 		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
 	}
 
@@ -148,7 +149,7 @@ void  SqliteAccountRepository::Update(const Account& account) {
 		sqlite3_stmt* stmt2;
 		std::string sql2 = "UPDATE saving_accounts SET lastAccrualDate = ? WHERE account_id = ?";
 
-		if (sqlite3_prepare_v2(db.GetConnection(), sql.c_str(), -1, &stmt2, nullptr) != SQLITE_OK) {
+		if (sqlite3_prepare_v2(db.GetConnection(), sql2.c_str(), -1, &stmt2, nullptr) != SQLITE_OK) {
 			throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
 		}
 

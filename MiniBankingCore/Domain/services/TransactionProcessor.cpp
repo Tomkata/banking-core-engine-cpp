@@ -19,7 +19,6 @@
 #include <unordered_map>
 
 
-
 void TransactionProcessor::Deposit(int toAccountId, Money amount) {
 
 	Transaction tr(TransactionType::Deposit, amount, -1, toAccountId);

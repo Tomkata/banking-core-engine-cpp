@@ -145,6 +145,7 @@
     <ClCompile Include="Infrastructure\Database\Database.cpp" />
     <ClCompile Include="Infrastructure\Database\sqlite3.c" />
     <ClCompile Include="Infrastructure\Factories\AccountFactory.cpp" />
+    <ClCompile Include="Infrastructure\Queries\AccountQueryService.cpp" />
     <ClCompile Include="Infrastructure\Repositories\SqliteAccountRepository.cpp" />
     <ClCompile Include="Infrastructure\Repositories\SqliteTransactionRepository.cpp" />
     <ClCompile Include="MiniBankingCore.cpp" />
@@ -179,6 +180,9 @@
     <ClInclude Include="Domain\Models\services\TransferOperation.h" />
     <ClInclude Include="Domain\Models\Transaction.h" />
     <ClInclude Include="Domain\Models\TransactionEntry.h" />
+    <ClInclude Include="Domain\Queries\AccountStatement.h" />
+    <ClInclude Include="Domain\Queries\IAccountQueryService.h" />
+    <ClInclude Include="Domain\Queries\StatementLine.h" />
     <ClInclude Include="Domain\Results\Result.h" />
     <ClInclude Include="Domain\services\TransactionProcessor.h" />
     <ClInclude Include="Domain\ValueObjects\Money.h" />
@@ -187,6 +191,7 @@
     <ClInclude Include="Infrastructure\Database\sqlite3.h" />
     <ClInclude Include="Infrastructure\Database\SqliteStatementGuard.h" />
     <ClInclude Include="Infrastructure\Factories\AccountFactory.h" />
+    <ClInclude Include="Infrastructure\Queries\AccountQueryService.h" />
     <ClInclude Include="Infrastructure\Repositories\SqliteAccountRepository.h" />
     <ClInclude Include="Infrastructure\Repositories\SqliteTransactionRepository.h" />
     <ClInclude Include="Infrastructure\SqliteUnitOfWork.h" />
