@@ -20,7 +20,7 @@ public:
     static Result Ok(T value) { return Result(OkTag{},value); }
     static Result Err(E error) { return Result(ErrTag{},error); }
 
-    bool IsOk() const { return _isSuccess; }
+        bool IsOk() const { return _isSuccess; }
     T Value() const { return _value; }
     E Error() const { return _error; }
 };

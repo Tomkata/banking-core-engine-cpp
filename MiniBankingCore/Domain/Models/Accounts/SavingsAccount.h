@@ -26,6 +26,15 @@ public:
 		interestRate(interestRate),
 		lastAccrualDate(lastAccrualDate) {
 	}
+	SavingsAccount(
+		Money balance,
+		double interestRate):
+		Account(AccountType::Saving),
+		interestRate(interestRate),
+		lastAccrualDate(std::chrono::system_clock::now())	
+
+	{
+	}
 
 	DepositResult CanDeposit(const Money& amount) const override {
 		return Account::BaseCanDeposit(amount);

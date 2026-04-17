@@ -16,12 +16,21 @@
 #include "../MiniBankingCore/Infrastructure/Repositories/SqliteAccountRepository.h"
 #include "../MiniBankingCore/Infrastructure/Repositories/SqliteTransactionRepository.h"
 #include "../MiniBankingCore/Infrastructure/SqliteUnitOfWork.h"
+#include "../MiniBankingCore/Infrastructure/Queries/AccountQueryService.h"
 
 #include "Domain/services/TransactionProcessor.h"
 #include "Domain/Mapper/EntryMapper.h"
 
 #include <iostream>
 
+std::string AccountTypeToString(AccountType type) {
+    switch (type) {
+    case AccountType::Checking: return "Checking";
+    case AccountType::Saving:   return "Saving";
+    case AccountType::Deposit:  return "Deposit";
+    default:                    return "Unknown";
+    }
+}
 
 
 int main()
@@ -46,7 +55,8 @@ balance_cents INTEGER NOT NULL
     amount_cents INTEGER NOT NULL,
     from_account_id INTEGER,
     to_account_id INTEGER,
-    failure_reason TEXT
+    failure_reason TEXT,
+    created_at INTEGER
 );
 )");
 
@@ -78,33 +88,36 @@ balance_cents INTEGER NOT NULL
     FOREIGN KEY(account_id) REFERENCES accounts(id)
 );)");
 
-    //db.Execute("DELETE FROM accounts;");
-    //db.Execute("DELETE FROM transactions;");
-    //db.Execute("DELETE FROM transaction_entries;");
-    //db.Execute("DELETE FROM sqlite_sequence WHERE name='accounts';");
-
+    db.Execute("DELETE FROM transaction_entries;");
+    db.Execute("DELETE FROM transactions;");
+        
     SqliteAccountRepository repo(db);
     EntryMapper mapper;
     SqliteTransactionRepository transactionRepo(db);
     SqliteUnitOfWork uow(db);
     TransferFeeCalculator tranferFeeCalc;
-    TransferOperation trOperation;
+    TransferOperation trOperation;  
     TransactionProcessor processor(repo, transactionRepo, mapper, uow, tranferFeeCalc, trOperation);
     InterestAccrualService accrualService(repo,processor);
+    AccountQueryService queryService(db);
+    accrualService.AccrueAll();
 
-    //accrualService.AccrueAll();
-
-    try
-    {
-        std::cout << "Before deposit" << std::endl;
-        processor.Deposit(1, Money(50000));
-        std::cout << "After deposit" << std::endl;
-
-    }
-    catch (const std::exception& ex)
-    {
+    try{
+        if (!repo.Exists(1) && !repo.Exists(2)) {
+            repo.Add(CheckingAccount());
+            repo.Add(SavingsAccount(Money(10000), 0.02));
+        }
+        processor.Deposit(1, Money(100000));
+        processor.Transfer(1,2, Money(1000));
+        auto statement = queryService.GetStatement(1);
+        std::cout << statement.AccountId << " " << statement.balance << " " << AccountTypeToString(statement.type) << std::endl;
+        for (const auto& line : statement.satementLines) {
+            std::cout << line.Amount << " " << line.CreatedAt << " " << line.Desciption << " " << line.trEntryType << std::endl;
+        }
+    }   
+    catch (const std::exception& ex){
         std::cout << ex.what() << std::endl;
-    }
+        }
 
     return 0;
 }

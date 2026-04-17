@@ -1,12 +1,12 @@
 #include "SqliteTransactionRepository.h"
 #include "../Database/SqliteStatementGuard.h"
-
+#include <chrono>
 #include <iostream>
 
 void SqliteTransactionRepository::Add( Transaction&& tr) {
 	sqlite3_stmt* stmt;
 
-	std::string sql = "INSERT INTO transactions (type,status,amount_cents,from_account_id,to_account_id,failure_reason) VALUES (?,?,?,?,?,?)";
+	std::string sql = "INSERT INTO transactions (type,status,amount_cents,from_account_id,to_account_id,failure_reason,created_at) VALUES (?,?,?,?,?,?,?)";
 
 	if (sqlite3_prepare_v2(db.GetConnection(),sql.c_str(),-1,&stmt,nullptr) != SQLITE_OK){
 		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
@@ -18,10 +18,11 @@ void SqliteTransactionRepository::Add( Transaction&& tr) {
 	sqlite3_bind_int64(stmt, 3,tr.GetAmount().GetCents());
 	sqlite3_bind_int(stmt, 4, tr.GetFromAccountId());
 	sqlite3_bind_int(stmt, 5, tr.GetToAccountId());
-	sqlite3_bind_text(stmt, 6, tr.GetFailureReason().c_str(),-1, SQLITE_TRANSIENT);
+	sqlite3_bind_text(stmt, 6, tr.GetFailureReason().c_str(), -1, SQLITE_TRANSIENT);
+	auto now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	sqlite3_bind_int64(stmt,7,static_cast<long long>(now));
 
-	if (sqlite3_step(stmt) != SQLITE_DONE)
-	{
+	if (sqlite3_step(stmt) != SQLITE_DONE){
 		throw std::runtime_error(sqlite3_errmsg(db.GetConnection()));
 	}
 
